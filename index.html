@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Flower — Breathing Heart</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=IM+Fell+English:ital@0;1&family=Pinyon+Script&display=swap" rel="stylesheet">
+<script>
+  // Early language detection — runs before GSAP
+  (function(){
+    var bl = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+    window._siteLang = bl.startsWith('fa') ? 'fa' : 'en';
+    // Apply to loader text immediately
+    document.addEventListener('DOMContentLoaded', function(){
+      var lt = document.getElementById('loader-text');
+      if(lt && window._siteLang === 'fa'){
+        lt.textContent = lt.getAttribute('data-fa') || lt.textContent;
+      }
+    });
+  })();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+  #preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0d0d0d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loader-content {
+    text-align: center;
+    color: #d4af37;
+    font-family: 'Serif', serif;
+}
+
+.flower-icon {
+    font-size: 50px;
+    animation: pulse 2s infinite;
+}
+
+#loader-text {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.5; }
+}
+
+:root {
+  --black:  #0a080d;
+  --deep:   #110d1a;
+  --mauve:  #3b1f4a;
+  --mauve2: #5c2e72;
+  --gold:   #c9a84c;
+  --gold2:  #e8d08a;
+  --gold3:  #f5e9c0;
+  --cream:  #fdf6e3;
+  --text:   #d4b896;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--black);
+  color:var(--text);
+  font-family:'Cormorant Garamond',serif;
+  overflow-x:hidden;
+  cursor:crosshair;
+}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--black);}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px;}
+
+/* ── CANVAS ── */
+#petal-canvas{
+  position:fixed;top:0;left:0;
+  width:100%;height:100%;
+  pointer-events:none;z-index:1;
+}
+
+/* ── AUDIO BTN ── */
+#audio-btn{
+  position:fixed;top:20px;right:20px;z-index:9999;
+  width:46px;height:46px;
+  border:1px solid var(--gold);border-radius:50%;
+  background:rgba(10,8,13,0.85);
+  backdrop-filter:blur(10px);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gold);font-size:20px;
+  transition:all .4s ease;
+  box-shadow:0 0 20px rgba(201,168,76,0.15);
+}
+#audio-btn:hover{background:var(--gold);color:var(--black);transform:scale(1.1);}
+#audio-btn.playing{box-shadow:0 0 20px rgba(201,168,76,0.4);}
+
+/* ── HERO (with BREATHING BACKGROUND) ── */
+#hero{
+  position:relative;min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;overflow:hidden;z-index:2;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 40%,#2a0d3a 0%,#110d1a 50%,#0a080d 100%);
+  /* BREATHING ANIMATION — like a heartbeat */
+  animation: breathe 8s ease-in-out infinite;
+  transform-origin: center center;
+}
+/* The breathing effect — scales the background gradient subtly */
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.95;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+/* Enhanced version with inner glow pulse */
+.hero-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, rgba(201,168,76,0.08) 0%, transparent 70%);
+  animation: glowPulse 8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+/* Optional: heartbeat overlay on text at peak */
+.hero-title {
+  animation: textHeartbeat 8s ease-in-out infinite;
+}
+@keyframes textHeartbeat {
+  0%, 100% { text-shadow: 0 0 30px rgba(201,168,76,0.3), 0 0 80px rgba(201,168,76,0.1); }
+  50% { text-shadow: 0 0 50px rgba(201,168,76,0.6), 0 0 120px rgba(201,168,76,0.25); }
+}
+
+.hero-line{
+  width:180px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  margin:16px auto;opacity:0;
+}
+.hero-tag{
+  font-size:11px;letter-spacing:5px;
+  text-transform:uppercase;color:var(--gold);opacity:0;
+  position:relative;z-index:2;
+}
+.hero-title{
+  font-family:'Pinyon Script',cursive;
+  font-size:clamp(58px,12vw,120px);
+  color:var(--gold2);line-height:1;
+  text-shadow:0 0 60px rgba(201,168,76,.4),0 0 120px rgba(201,168,76,.15);
+  opacity:0;position:relative;z-index:2;
+}
+.hero-sub{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:clamp(14px,2.5vw,20px);
+  color:var(--text);letter-spacing:1px;
+  max-width:500px;opacity:0;line-height:1.9;
+  position:relative;z-index:2;
+}
+.hero-scroll-hint{
+  position:absolute;bottom:40px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  opacity:0;z-index:2;
+}
+.hero-scroll-hint span{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);}
+.scroll-line{
+  width:1px;height:60px;
+  background:linear-gradient(to bottom,var(--gold),transparent);
+  animation:scrollPulse 2s ease infinite;
+}
+@keyframes scrollPulse{
+  0%,100%{opacity:.3;transform:scaleY(1);}
+  50%{opacity:1;transform:scaleY(1.1);}
+}
+
+/* ── MAIN ── */
+main{position:relative;z-index:2;}
+
+/* ── CHAPTER DIVIDER ── */
+.chapter-divider{
+  display:flex;align-items:center;gap:20px;
+  max-width:600px;margin:80px auto 40px;
+  padding:0 30px;opacity:0;
+}
+.chapter-divider::before,.chapter-divider::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold));
+}
+.chapter-divider::after{background:linear-gradient(90deg,var(--gold),transparent);}
+.chapter-divider span{
+  font-size:10px;letter-spacing:4px;
+  color:var(--gold);text-transform:uppercase;white-space:nowrap;
+}
+
+/* ── PANEL ── */
+.panel{max-width:780px;margin:0 auto 120px;padding:0 24px;position:relative;}
+
+.img-wrapper{
+  position:relative;overflow:hidden;
+  border:1px solid rgba(201,168,76,.2);
+  box-shadow:0 0 80px rgba(59,31,74,.5),inset 0 0 30px rgba(0,0,0,.5);
+  opacity:0;transform:scale(.96);
+}
+.img-wrapper img{
+  width:100%;display:block;object-fit:cover;
+  filter:sepia(15%) contrast(1.05) brightness(.92);
+  transition:filter 1.2s ease;
+}
+.img-wrapper:hover img{filter:sepia(5%) contrast(1.08) brightness(1);}
+.img-wrapper::before,.img-wrapper::after{
+  content:'';position:absolute;
+  width:28px;height:28px;
+  border-color:var(--gold);border-style:solid;
+  z-index:3;pointer-events:none;
+}
+.img-wrapper::before{top:8px;left:8px;border-width:1px 0 0 1px;}
+.img-wrapper::after{bottom:8px;right:8px;border-width:0 1px 1px 0;}
+
+/* ── BUBBLE ── */
+.bubble-wrap{position:absolute;z-index:10;opacity:0;pointer-events:none;}
+.bubble{
+  background:var(--cream);color:#2a1a0a;
+  border-radius:16px 16px 16px 4px;
+  padding:12px 18px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:13px;line-height:1.7;max-width:220px;
+  box-shadow:2px 4px 20px rgba(0,0,0,.6);
+  position:relative;border:1px solid rgba(201,168,76,.3);
+}
+.bubble::after{
+  content:'';position:absolute;
+  bottom:-10px;left:14px;
+  border-width:10px 8px 0 0;border-style:solid;
+  border-color:var(--cream) transparent transparent transparent;
+}
+.bubble.right{border-radius:16px 16px 4px 16px;}
+.bubble.right::after{left:auto;right:14px;border-width:10px 0 0 8px;}
+.bubble-name{
+  font-size:10px;font-weight:bold;letter-spacing:1px;
+  text-transform:uppercase;color:var(--mauve2);margin-bottom:4px;
+}
+
+/* ── CAPTION ── */
+.panel-caption{margin-top:28px;padding:0 8px;opacity:0;}
+.panel-caption p{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:clamp(15px,2vw,18px);line-height:2;
+  color:var(--text);text-align:center;
+}
+.panel-caption .gold-word{color:var(--gold2);font-style:normal;}
+
+/* ── QUOTE ── */
+.quote-block{
+  max-width:580px;margin:0 auto 120px;
+  padding:40px;border-left:2px solid var(--gold);
+  background:linear-gradient(135deg,rgba(59,31,74,.15),transparent);
+  position:relative;opacity:0;
+}
+.quote-block::before{
+  content:'\201C';position:absolute;
+  top:10px;left:16px;font-size:80px;
+  color:var(--gold);opacity:.2;font-family:serif;line-height:1;
+}
+.quote-block p{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:18px;line-height:2;color:var(--text);
+}
+.quote-block cite{
+  display:block;margin-top:16px;
+  font-size:11px;letter-spacing:3px;
+  color:var(--gold);text-transform:uppercase;
+}
+
+/* ── PASSWORD SECTION ── */
+#secret-section{
+  max-width:600px;margin:0 auto 160px;
+  padding:0 24px;text-align:center;
+  position:relative;opacity:0;
+}
+.lock-box{
+  border:1px solid var(--gold);
+  padding:60px 40px;
+  background:linear-gradient(135deg,rgba(59,31,74,.3),rgba(10,8,13,.8));
+  box-shadow:0 0 60px rgba(201,168,76,.08),inset 0 0 40px rgba(0,0,0,.5);
+  position:relative;overflow:hidden;
+}
+.lock-box::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    45deg,transparent,transparent 40px,
+    rgba(201,168,76,.02) 40px,rgba(201,168,76,.02) 41px
+  );
+}
+.lock-icon{font-size:48px;margin-bottom:24px;display:block;filter:drop-shadow(0 0 12px rgba(201,168,76,.5));}
+.lock-title{font-family:'Pinyon Script',cursive;font-size:36px;color:var(--gold2);margin-bottom:8px;}
+.lock-hint{font-size:12px;letter-spacing:3px;color:var(--text);opacity:.6;text-transform:uppercase;margin-bottom:36px;}
+
+#password-input{
+  background:rgba(0,0,0,.5);
+  border:1px solid rgba(201,168,76,.4);
+  border-radius:0;padding:14px 24px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;color:var(--gold2);
+  text-align:center;letter-spacing:6px;
+  width:160px;outline:none;
+  transition:border-color .3s,box-shadow .3s;
+}
+#password-input:focus{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76,.2);}
+#password-input::placeholder{color:rgba(201,168,76,.3);}
+
+#unlock-btn{
+  display:block;margin:20px auto 0;
+  background:transparent;border:1px solid var(--gold);
+  color:var(--gold);font-family:'Cormorant Garamond',serif;
+  font-size:13px;letter-spacing:4px;text-transform:uppercase;
+  padding:12px 36px;cursor:pointer;transition:all .4s ease;
+  position:relative;z-index:1;
+}
+#unlock-btn:hover{background:var(--gold);color:var(--black);}
+
+#pw-error{
+  margin-top:14px;font-size:12px;color:#c06060;
+  letter-spacing:2px;opacity:0;transition:opacity .3s;
+  position:relative;z-index:1;
+}
+
+/* ── SECRET REVEAL ── */
+#secret-reveal{
+  display:none;text-align:center;
+  padding:0 24px 160px;position:relative;
+  opacity:0;
+}
+.reveal-img-wrapper{
+  max-width:780px;margin:0 auto 48px;
+  position:relative;overflow:hidden;
+  border:1px solid var(--gold);
+  box-shadow:0 0 100px rgba(201,168,76,.2);
+}
+.reveal-img-wrapper img{width:100%;display:block;object-fit:cover;filter:sepia(10%) brightness(.95);}
+
+.final-message{
+  max-width:640px;margin:0 auto;
+  padding:48px 40px;
+  background:linear-gradient(135deg,rgba(59,31,74,.2),transparent);
+  border:1px solid rgba(201,168,76,.3);
+}
+.final-message p{
+  font-family:'Pinyon Script',cursive;
+  font-size:clamp(22px,4vw,34px);
+  color:var(--gold3);line-height:1.8;
+  text-shadow:0 0 30px rgba(201,168,76,.3);
+  min-height:60px;
+}
+
+/* ── CURSOR ── */
+.cursor-spark{
+  position:fixed;width:4px;height:4px;
+  border-radius:50%;background:rgba(201,168,76,.7);
+  pointer-events:none;z-index:997;
+  transform:translate(-50%,-50%);
+}
+
+/* ── BURST PETALS ── */
+.petal-burst{position:fixed;inset:0;pointer-events:none;z-index:1000;}
+.burst-petal{
+  position:absolute;border-radius:50% 50% 50% 0;
+  transform-origin:bottom left;
+  animation:burstFly var(--dur) ease-out forwards;
+  opacity:0;
+}
+@keyframes burstFly{
+  0%{opacity:1;transform:rotate(var(--ang)) translateY(0) scale(1);}
+  60%{opacity:.9;}
+  100%{opacity:0;transform:rotate(calc(var(--ang) + 120deg)) translateY(var(--dist)) scale(.3);}
+}
+
+/* ── ORNAMENT ── */
+.ornament{
+  text-align:center;color:var(--gold);
+  font-size:20px;opacity:.5;
+  margin:48px 0;letter-spacing:12px;
+}
+
+/* ── PANEL LAYOUTS ── */
+.panel-side{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:24px;align-items:start;
+}
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;padding:60px 24px;
+  border-top:1px solid rgba(201,168,76,.1);
+  position:relative;z-index:2;
+}
+footer p{font-size:11px;letter-spacing:3px;color:var(--gold);opacity:.4;text-transform:uppercase;}
+
+/* ── NOISE ── */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:998;opacity:.35;
+}
+
+/* ══════════════════════════════
+   DYNAMIC WEATHER SYSTEM
+══════════════════════════════ */
+
+/* ── Weather canvas overlay ── */
+#weather-canvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 2;
+  opacity: 0;
+  transition: opacity 1.8s ease;
+}
+#weather-canvas.wx-visible { opacity: 1; }
+
+/* ── Night: star field + fog ── */
+.wx-night #petal-canvas { opacity: 0.4; }
+.wx-night body { background: #04030a; }
+.wx-night .hero-bg {
+  background: radial-gradient(ellipse at 50% 35%,#160d2a 0%,#06040f 55%,#02010a 100%) !important;
+}
+
+/* Night fog overlay */
+#wx-fog {
+  position: fixed; inset: 0; pointer-events: none; z-index: 3;
+  opacity: 0; transition: opacity 3s ease;
+  background:
+    radial-gradient(ellipse 120% 30% at 50% 100%, rgba(92,60,130,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 80%  20% at 20% 95%,  rgba(60,30,80,0.12)  0%, transparent 60%),
+    radial-gradient(ellipse 90%  25% at 80% 98%,  rgba(80,50,110,0.14) 0%, transparent 65%);
+  animation: fogDrift 18s ease-in-out infinite alternate;
+}
+#wx-fog.wx-visible { opacity: 1; }
+@keyframes fogDrift {
+  0%   { transform: translateX(-12px) scaleX(1);   }
+  50%  { transform: translateX(8px)  scaleX(1.03); }
+  100% { transform: translateX(-6px) scaleX(0.97); }
+}
+
+/* ── Rain overlay ── */
+#wx-rain-canvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 2;
+  opacity: 0; transition: opacity 2s ease;
+}
+#wx-rain-canvas.wx-visible { opacity: 1; }
+
+/* ── Winter / Snow petals ── */
+.wx-winter #petal-canvas { opacity: 1; }
+
+/* ── Weather indicator badge ── */
+#wx-badge {
+  position: fixed; bottom: 32px; left: 24px;
+  z-index: 9999;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px; letter-spacing: 2px;
+  color: rgba(201,168,76,0.45);
+  text-transform: uppercase;
+  opacity: 0; transition: opacity 1s ease;
+  user-select: none;
+  display: flex; align-items: center; gap: 7px;
+}
+#wx-badge.wx-visible { opacity: 1; }
+#wx-badge-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--gold); opacity: 0.5;
+  animation: wxDotPulse 3s ease infinite;
+}
+@keyframes wxDotPulse {
+  0%,100% { opacity: 0.3; transform: scale(1); }
+  50%      { opacity: 0.7; transform: scale(1.4); }
+}
+
+/* ── MOBILE ── */
+@media(max-width:600px){
+  .panel-side{grid-template-columns:1fr;}
+  .bubble-wrap{display:none;}
+  .lock-box{padding:40px 20px;}
+  #password-input{width:130px;font-size:18px;}
+  .final-message{padding:32px 20px;}
+  .chapter-divider{margin:50px auto 30px;}
+  .panel{margin-bottom:80px;}
+}
+
+/* ── LANGUAGE SWITCHER ── */
+#lang-switcher{
+  position:fixed;
+  top:20px;left:20px;
+  z-index:9999;
+  display:flex;align-items:center;gap:10px;
+}
+.lang-label{
+  font-family:'Cormorant Garamond',serif;
+  font-size:11px;letter-spacing:2px;
+  color:rgba(201,168,76,0.55);
+  text-transform:uppercase;
+  user-select:none;
+  transition:color .3s;
+}
+.lang-label.active{color:var(--gold);}
+
+.lang-toggle-track{
+  position:relative;
+  width:52px;height:26px;
+  border:1px solid rgba(201,168,76,0.35);
+  border-radius:13px;
+  background:rgba(10,8,13,0.85);
+  backdrop-filter:blur(10px);
+  cursor:pointer;
+  transition:border-color .4s, box-shadow .4s;
+  box-shadow:0 0 16px rgba(201,168,76,0.08);
+}
+.lang-toggle-track:hover{
+  border-color:rgba(201,168,76,0.65);
+  box-shadow:0 0 20px rgba(201,168,76,0.2);
+}
+.lang-toggle-thumb{
+  position:absolute;
+  top:3px;left:3px;
+  width:18px;height:18px;
+  border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 10px rgba(201,168,76,0.5);
+  transition:transform .4s cubic-bezier(.68,-.55,.27,1.55);
+}
+.lang-toggle-track.fa-active .lang-toggle-thumb{
+  transform:translateX(26px);
+}
+.lang-toggle-track.fa-active{
+  border-color:var(--gold);
+  box-shadow:0 0 20px rgba(201,168,76,0.3);
+}
+
+/* ══════════════════════════════
+   MOOD SELECTOR
+══════════════════════════════ */
+#mood-selector{
+  position:fixed;
+  bottom:32px;right:24px;
+  z-index:9999;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.mood-label{
+  font-family:'Cormorant Garamond',serif;
+  font-size:9px;letter-spacing:3px;
+  color:rgba(201,168,76,0.4);
+  text-transform:uppercase;
+  user-select:none;
+  writing-mode:vertical-rl;
+  transform:rotate(180deg);
+  margin-bottom:4px;
+}
+.mood-dots{display:flex;flex-direction:column;gap:10px;align-items:center;}
+.mood-dot{
+  width:13px;height:13px;border-radius:50%;
+  cursor:pointer;border:1.5px solid transparent;
+  transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+  position:relative;
+}
+.mood-dot::after{
+  content:attr(data-label);
+  position:absolute;
+  right:calc(100% + 10px);
+  top:50%;transform:translateY(-50%);
+  font-family:'Cormorant Garamond',serif;
+  font-size:10px;letter-spacing:2px;
+  color:var(--gold);opacity:0;
+  white-space:nowrap;pointer-events:none;
+  transition:opacity .25s ease;
+  text-transform:uppercase;
+}
+.mood-dot:hover::after{opacity:1;}
+.mood-dot:hover{transform:scale(1.35);}
+.mood-dot.active{
+  border-color:var(--gold);
+  box-shadow:0 0 10px rgba(201,168,76,0.5);
+  transform:scale(1.2);
+}
+/* Dot colors */
+.mood-dot[data-mood="midnight"]{ background:#3b1f4a; }
+.mood-dot[data-mood="rose"]    { background:#7a2040; }
+.mood-dot[data-mood="ivory"]   { background:#c8b89a; }
+
+/* ── MOOD: ROSE ── */
+body.mood-rose{
+  --black:  #150810;
+  --deep:   #1e0a14;
+  --mauve:  #5a1530;
+  --mauve2: #8b2550;
+  --gold:   #c47c8a;
+  --gold2:  #e8aab8;
+  --gold3:  #f5d8de;
+  --cream:  #fff0f3;
+  --text:   #d4a0a8;
+}
+body.mood-rose .hero-bg{
+  background:radial-gradient(ellipse at 50% 40%,#4a0a25 0%,#1e0a14 50%,#150810 100%);
+}
+body.mood-rose #preloader{ background:#150810; }
+
+/* ── MOOD: IVORY ── */
+body.mood-ivory{
+  --black:  #f0ebe0;
+  --deep:   #e8e0d0;
+  --mauve:  #c8b89a;
+  --mauve2: #8b6a4a;
+  --gold:   #8b6a2a;
+  --gold2:  #6b4a1a;
+  --gold3:  #3a2a0a;
+  --cream:  #2a1a0a;
+  --text:   #4a3a2a;
+}
+body.mood-ivory{
+  background:var(--black);
+  color:var(--text);
+}
+body.mood-ivory .hero-bg{
+  background:radial-gradient(ellipse at 50% 40%,#d8c8a8 0%,#e8e0d0 50%,#f0ebe0 100%);
+}
+body.mood-ivory .bubble{ background:#2a1a0a; color:#f0ebe0; }
+body.mood-ivory .bubble::after{ border-color:#2a1a0a transparent transparent transparent; }
+body.mood-ivory #preloader{ background:#f0ebe0; }
+body.mood-ivory .loader-content{ color:#8b6a2a; }
+body.mood-ivory body::after{ opacity:.15; }
+
+/* ══════════════════════════════
+   WITHERED FLOWER CHAPTER
+══════════════════════════════ */
+#withered-flower-section {
+  max-width: 860px;
+  margin: 0 auto 120px;
+  padding: 0 24px;
+}
+
+.wf-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.wf-img-wrapper {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(201,168,76,.2);
+  box-shadow: 0 0 80px rgba(59,31,74,.5), inset 0 0 30px rgba(0,0,0,.5);
+  opacity: 0;
+}
+.wf-img-wrapper::before,
+.wf-img-wrapper::after {
+  content: '';
+  position: absolute;
+  width: 28px; height: 28px;
+  border-color: var(--gold); border-style: solid;
+  z-index: 3; pointer-events: none;
+}
+.wf-img-wrapper::before { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
+.wf-img-wrapper::after  { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+
+.wf-img-wrapper img {
+  width: 100%; display: block; object-fit: cover;
+  filter: sepia(35%) contrast(1.04) brightness(.90);
+  transition: filter 1.2s ease;
+}
+.wf-img-wrapper:hover img {
+  filter: sepia(15%) contrast(1.07) brightness(.96);
+}
+
+.wf-text-block {
+  opacity: 0;
+}
+
+.wf-text-block p {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(17px, 2.2vw, 22px);
+  line-height: 2;
+  color: var(--text);
+  text-align: center;
+  position: relative;
+  padding: 32px 24px;
+  border: 1px solid rgba(201,168,76,.15);
+  background: linear-gradient(135deg, rgba(59,31,74,.12), transparent);
+}
+
+.wf-text-block p::before {
+  content: '\201C';
+  position: absolute;
+  top: 6px; left: 14px;
+  font-size: 72px;
+  color: var(--gold); opacity: .18;
+  font-family: serif; line-height: 1;
+}
+
+.wf-text-block .wf-highlight {
+  color: var(--gold2);
+  font-style: normal;
+}
+
+@media (max-width: 640px) {
+  .wf-container {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  #withered-flower-section {
+    margin-bottom: 80px;
+  }
+}
+
+/* ══════════════════════════════
+   ENVELOPE ANIMATION
+══════════════════════════════ */
+
+/* Hide old lock-box interior during envelope — keep #secret-section wrapper */
+#envelope-stage{
+  display:none;
+  max-width:460px;
+  margin:0 auto;
+  perspective:900px;
+  position:relative;
+}
+#envelope-stage.visible{ display:block; }
+
+.envelope{
+  width:100%;
+  position:relative;
+  transform-style:preserve-3d;
+}
+
+/* ── Envelope body (bottom part) ── */
+.env-body{
+  width:100%;
+  padding-top:62%; /* 460×285 golden ratio ish */
+  background:linear-gradient(160deg,#1a0f2e 0%,#0e0918 100%);
+  border:1px solid rgba(201,168,76,0.5);
+  border-radius:2px 2px 6px 6px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 20px 80px rgba(0,0,0,0.7), 0 0 40px rgba(201,168,76,0.08);
+}
+
+/* decorative diagonal folds inside body */
+.env-body::before{
+  content:'';
+  position:absolute;inset:0;
+  background:
+    linear-gradient(135deg, transparent 49%, rgba(201,168,76,0.07) 49%, rgba(201,168,76,0.07) 51%, transparent 51%),
+    linear-gradient(225deg, transparent 49%, rgba(201,168,76,0.05) 49%, rgba(201,168,76,0.05) 51%, transparent 51%);
+  pointer-events:none;
+}
+
+/* gold wax seal */
+.env-seal{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:54px;height:54px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#e8d08a,#c9a84c 40%,#9a7a30 100%);
+  border:1px solid rgba(201,168,76,0.8);
+  box-shadow:0 0 20px rgba(201,168,76,0.4),inset 0 0 10px rgba(0,0,0,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  z-index:4;
+  transition:opacity .4s ease;
+}
+
+/* ── Envelope flap (top, folds down from top edge) ── */
+.env-flap{
+  width:100%;
+  position:absolute;
+  top:0;left:0;
+  transform-origin:top center;
+  transform-style:preserve-3d;
+  z-index:5;
+  /* polygon that looks like a pointed envelope flap */
+  clip-path:polygon(0 0,100% 0,50% 68%);
+  background:linear-gradient(180deg,#221240 0%,#160c2c 100%);
+  border-left:1px solid rgba(201,168,76,0.5);
+  border-right:1px solid rgba(201,168,76,0.5);
+  border-top:1px solid rgba(201,168,76,0.5);
+}
+/* flap height matches 68% of body padding-top (62% * 0.68 ≈ 42%) */
+.env-flap{ padding-top:42%; }
+
+/* ── Letter that rises up ── */
+.env-letter{
+  position:absolute;
+  bottom:0;left:50%;
+  transform:translateX(-50%) translateY(0);
+  width:82%;
+  background:linear-gradient(160deg,#fdf6e3 0%,#f5ead0 100%);
+  border:1px solid rgba(201,168,76,0.4);
+  border-radius:2px;
+  padding:28px 24px 22px;
+  text-align:center;
+  box-shadow:0 -4px 30px rgba(0,0,0,0.5);
+  z-index:3;
+  opacity:0;
+  pointer-events:none;
+}
+.env-letter .letter-ornament{
+  font-size:18px;color:var(--mauve2);
+  letter-spacing:8px;margin-bottom:10px;display:block;
+  opacity:.7;
+}
+.env-letter .letter-text{
+  font-family:'IM Fell English',serif;
+  font-style:italic;
+  font-size:clamp(15px,2.4vw,19px);
+  color:#1a0d05;
+  line-height:2;
+  letter-spacing:0.3px;
+  text-shadow:0 1px 0 rgba(255,255,255,0.6);
+}
+
+/* ── Env outer container for 3D tilt ── */
+#envelope-stage .envelope-wrapper{
+  transform-style:preserve-3d;
+}
+</style>
+</head>
+<body>
+  <div id="preloader">
+    <div class="loader-content">
+        <div class="flower-icon">⚜️</div>
+        <p id="loader-text" data-en="Preparing your special chapter..." data-fa="در حال آماده کردن فصل خاص شما...">Preparing your special chapter...</p>
+    </div>
+</div>
+
+
+<canvas id="petal-canvas"></canvas>
+<!-- Dynamic Weather System elements -->
+<canvas id="weather-canvas"></canvas>
+<canvas id="wx-rain-canvas"></canvas>
+<div id="wx-fog"></div>
+<div id="wx-badge"><div id="wx-badge-dot"></div><span id="wx-badge-label"></span></div>
+
+<button id="audio-btn" title="Toggle music" aria-label="Toggle music">♪</button>
+
+<!-- LANGUAGE SWITCHER -->
+<div id="lang-switcher" aria-label="Language switcher">
+  <span class="lang-label" id="lbl-en">EN</span>
+  <div class="lang-toggle-track" id="lang-toggle" role="switch" aria-checked="false" tabindex="0" title="Switch language">
+    <div class="lang-toggle-thumb"></div>
+  </div>
+  <span class="lang-label" id="lbl-fa">FA</span>
+</div>
+
+<!-- MOOD SELECTOR -->
+<div id="mood-selector" aria-label="Mood selector">
+  <span class="mood-label">Mood</span>
+  <div class="mood-dots">
+    <div class="mood-dot active" data-mood="midnight" data-label="Midnight" title="Midnight"></div>
+    <div class="mood-dot"        data-mood="rose"     data-label="Rose"     title="Rose"></div>
+    <div class="mood-dot"        data-mood="ivory"    data-label="Ivory"    title="Ivory"></div>
+  </div>
+</div>
+
+<!-- HERO with BREATHING BACKGROUND -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-tag" id="h-tag"
+       data-en="— A Gift Written in Petals —"
+       data-fa="— هدیه‌ای نوشته در گلبرگ‌ها —">— A Gift Written in Petals —</div>
+  <div class="hero-line" id="h-line1"></div>
+  <h1 class="hero-title" id="h-title"
+      data-en="For My Flower"
+      data-fa="برای گُلِ من">For My Flower</h1>
+  <div class="hero-line" id="h-line2"></div>
+  <p class="hero-sub" id="h-sub"
+     data-en="Even withered flowers hold beauty.<br>This one was made for you."
+     data-fa="حتی گل‌های پژمرده هم زیبایی دارند.<br>این یکی برای تو ساخته شده.">
+    Even withered flowers hold beauty.<br>
+    This one was made for you.
+  </p>
+  <div class="hero-scroll-hint" id="h-scroll">
+    <span data-en="Scroll" data-fa="پایین بروید">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<main>
+
+  <!-- Chapter I -->
+  <div class="chapter-divider cd-1"><span
+    data-en="Chapter I — First Bloom"
+    data-fa="فصل اول — اولین شکوفه">Chapter I — First Bloom</span></div>
+
+  <div class="panel panel-full p1">
+    <div class="img-wrapper iw1" style="max-height:620px;">
+      <img src="https://i.postimg.cc/ZYySc8cR/0b928bb8cbb832f28885c8d44476d970.jpg"
+           loading="lazy" alt="First Bloom">
+    </div>
+    <div class="bubble-wrap bw1" style="top:12%;right:-10px;">
+      <div class="bubble right">
+        <div class="bubble-name"
+             data-en="Her" data-fa="او">Her</div>
+        <span data-en="I keep looking for you in every quiet morning."
+              data-fa="در هر صبح آرام دنبالت می‌گردم.">I keep looking for you in every quiet morning.</span>
+      </div>
+    </div>
+    <div class="panel-caption pc1">
+      <p data-en='There was something about the way the <span class="gold-word">light</span> fell—<br>as if it knew exactly where to find you.'
+         data-fa='چیزی در نحوه تابش <span class="gold-word">نور</span> بود—<br>انگار که می‌دانست دقیقاً کجا تو را پیدا کند.'>There was something about the way the <span class="gold-word">light</span> fell—<br>
+      as if it knew exactly where to find you.</p>
+    </div>
+  </div>
+
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <blockquote class="quote-block qb1">
+    <p data-en="In every story where two people find each other, there is always a moment—<br>small and unremarkable to the world—<br>that changed everything."
+       data-fa="در هر داستانی که دو نفر یکدیگر را پیدا می‌کنند، همیشه لحظه‌ای هست—<br>کوچک و ناچیز برای دنیا—<br>که همه چیز را تغییر داد.">In every story where two people find each other, there is always a moment—<br>
+    small and unremarkable to the world—<br>
+    that changed everything.</p>
+    <cite data-en="— Page 14" data-fa="— صفحه ۱۴">— Page 14</cite>
+  </blockquote>
+
+  <!-- Chapter II -->
+  <div class="chapter-divider cd-2"><span
+    data-en="Chapter II — Falling Pages"
+    data-fa="فصل دوم — صفحات در حال سقوط">Chapter II — Falling Pages</span></div>
+
+  <div class="panel panel-side p2">
+    <div style="position:relative;">
+      <div class="img-wrapper iw2">
+        <img src="https://i.postimg.cc/v8nJ9QYk/73ee85dd4c728ae5900547406cf77dba.jpg"
+             loading="lazy" alt="Falling Pages">
+      </div>
+      <div class="bubble-wrap bw2" style="bottom:14%;left:-8px;">
+        <div class="bubble">
+          <div class="bubble-name"
+               data-en="Him" data-fa="او">Him</div>
+          <span data-en="Stay a little longer. The story isn't over yet."
+                data-fa="کمی بیشتر بمان. داستان هنوز تمام نشده.">Stay a little longer. The story isn't over yet.</span>
+        </div>
+      </div>
+    </div>
+    <div style="padding-top:40px;">
+      <div class="panel-caption pc2" style="text-align:left;margin-top:0;">
+        <p style="text-align:left;"
+           data-en='Every chapter you have lived through—<br>even the <span class="gold-word">heavy</span> ones—<br>I would read them all.<br><br>Because they led you here.'
+           data-fa='هر فصلی که از سرگذرانده‌ای—<br>حتی <span class="gold-word">سنگین‌ترین</span>‌هایشان—<br>همه را می‌خواندم.<br><br>چون به اینجا رسیدی.'>Every chapter you have lived through—<br>
+        even the <span class="gold-word">heavy</span> ones—<br>
+        I would read them all.<br><br>
+        Because they led you here.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <!-- Chapter III -->
+  <div class="chapter-divider cd-3"><span
+    data-en="Chapter III — The Drama of Us"
+    data-fa="فصل سوم — درام ما">Chapter III — The Drama of Us</span></div>
+
+  <div class="panel panel-full p3">
+    <div class="img-wrapper iw3" style="max-height:680px;">
+      <img src="https://i.postimg.cc/Px4npHnY/04f8c3938e89c4b21187c176d6498e04.jpg"
+           loading="lazy" alt="Drama">
+    </div>
+    <div class="bubble-wrap bw3" style="top:8%;left:-6px;">
+      <div class="bubble">
+        <div class="bubble-name"
+             data-en="Her" data-fa="او">Her</div>
+        <span data-en="Why does it feel like I've known you from before this life?"
+              data-fa="چرا حس می‌کنم تو را از قبل از این زندگی می‌شناختم؟">Why does it feel like I've known you from before this life?</span>
+      </div>
+    </div>
+    <div class="bubble-wrap bw3b" style="bottom:18%;right:-6px;">
+      <div class="bubble right">
+        <div class="bubble-name"
+             data-en="Him" data-fa="او">Him</div>
+        <span data-en="Maybe the petals always knew which way the wind would carry them."
+              data-fa="شاید گلبرگ‌ها همیشه می‌دانستند باد آن‌ها را به کجا می‌برد.">Maybe the petals always knew which way the wind would carry them.</span>
+      </div>
+    </div>
+    <div class="panel-caption pc3">
+      <p data-en='Some feelings arrive not like storms—<br>but like the <span class="gold-word">last page</span> of a book you weren't ready to finish.'
+         data-fa='بعضی احساسات مثل طوفان نمی‌رسند—<br>بلکه مثل <span class="gold-word">آخرین صفحه</span> کتابی که آماده تمامش نبودی.'>Some feelings arrive not like storms—<br>
+      but like the <span class="gold-word">last page</span> of a book you weren't ready to finish.</p>
+    </div>
+  </div>
+
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <blockquote class="quote-block qb2">
+    <p data-en="The withered flower does not mourn its petals.<br>It simply becomes the most honest thing in the garden."
+       data-fa="گل پژمرده برای گلبرگ‌هایش عزاداری نمی‌کند.<br>فقط صادقانه‌ترین چیز باغ می‌شود.">The withered flower does not mourn its petals.<br>
+    It simply becomes the most honest thing in the garden.</p>
+    <cite data-en="— Tears on a Withered Flower, Vol. 3"
+          data-fa="— اشک بر گل پژمرده، جلد ۳">— Tears on a Withered Flower, Vol. 3</cite>
+  </blockquote>
+
+  <!-- Chapter — Withered Flower -->
+  <div class="chapter-divider cd-wf"><span
+    data-en="Chapter — Withered Flower"
+    data-fa="فصل — گل پژمرده">Chapter — Withered Flower</span></div>
+
+  <section id="withered-flower-section">
+    <div class="wf-container">
+      <div class="wf-img-wrapper">
+        <img src="https://i.postimg.cc/jjGF3RBB/fdafb26af381f5c096463a954a050282.jpg"
+             loading="lazy" alt="Withered Flower">
+      </div>
+      <div class="wf-text-block">
+        <p data-en='In a world where everything seems to <span class="wf-highlight">wither away</span>,<br>you remain the only place where I truly <span class="wf-highlight">bloom</span>.'
+           data-fa='در دنیایی که همه چیز <span class="wf-highlight">پژمرده</span> می‌شود،<br>تو تنها جایی هستی که من واقعاً <span class="wf-highlight">شکوفا</span> می‌شوم.'>In a world where everything seems to <span class="wf-highlight">wither away</span>,<br>you remain the only place where I truly <span class="wf-highlight">bloom</span>.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <!-- PASSWORD -->
+  <div class="chapter-divider cd-4"><span
+    data-en="The Final Chapter — Locked"
+    data-fa="فصل پایانی — قفل شده">The Final Chapter — Locked</span></div>
+
+  <div id="secret-section">
+    <div class="lock-box">
+      <span class="lock-icon">🔒</span>
+      <div class="lock-title"
+           data-en="A Secret Page"
+           data-fa="یک صفحه پنهان">A Secret Page</div>
+      <div class="lock-hint"
+           data-en="Enter the number to unlock the final chapter"
+           data-fa="عدد را وارد کنید تا فصل پایانی باز شود">Enter the number to unlock the final chapter</div>
+      <input type="number" id="password-input" placeholder="· · ·" maxlength="6"
+             inputmode="numeric" autocomplete="off">
+      <button id="unlock-btn"
+              data-en="Open" data-fa="باز کن">Open</button>
+      <div id="pw-error"
+           data-en="That is not the right memory."
+           data-fa="این خاطره درست نیست.">That is not the right memory.</div>
+    </div>
+
+    <!-- ENVELOPE STAGE — shown after correct password -->
+    <div id="envelope-stage">
+      <div class="envelope-wrapper">
+        <div class="envelope" id="the-envelope">
+          <!-- Flap -->
+          <div class="env-flap" id="env-flap"></div>
+          <!-- Body -->
+          <div class="env-body" id="env-body">
+            <div class="env-seal" id="env-seal">✦</div>
+            <!-- Letter inside -->
+            <div class="env-letter" id="env-letter">
+              <span class="letter-ornament">✦ ✦ ✦</span>
+              <p class="letter-text"
+                 data-en="Turn the page,<br>your story awaits…"
+                 data-fa="صفحه را برگردان،<br>داستانت منتظر است…">Turn the page,<br>your story awaits…</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECRET REVEAL -->
+  <div id="secret-reveal">
+    <div class="chapter-divider" style="opacity:1;margin-bottom:60px;">
+      <span data-en="Chapter IV — The Final Bloom"
+            data-fa="فصل چهارم — آخرین شکوفه">Chapter IV — The Final Bloom</span>
+    </div>
+    <div class="reveal-img-wrapper">
+      <img src="https://i.postimg.cc/rpvhFrrT/589d37f66462530281dcb9018a23e287.jpg"
+           loading="lazy" alt="Final Bloom">
+    </div>
+    <div class="final-message">
+      <p id="final-text"></p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p data-en="For My Flower &nbsp;·&nbsp; Made with petals and patience"
+     data-fa="برای گُلِ من &nbsp;·&nbsp; ساخته شده با گلبرگ و صبر">For My Flower &nbsp;·&nbsp; Made with petals and patience</p>
+</footer>
+
+<div id="burst-container" style="position:fixed;inset:0;pointer-events:none;z-index:1000;"></div>
+
+<audio id="bg-audio" loop preload="auto">
+  <source src="https://files.catbox.moe/8armdt.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// ══════════════════════════════
+//  FALLING PETALS CANVAS
+// ══════════════════════════════
+(function(){
+  const canvas = document.getElementById('petal-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, petals = [];
+  const COLORS = ['#c9a84c','#e8d08a','#a06090','#d4b896','#8b4a6e','#e8b4d8'];
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function Petal(){
+    this.reset = function(){
+      this.x = Math.random() * W;
+      this.y = -20;
+      this.size = 4 + Math.random() * 8;
+      this.speedY = 0.35 + Math.random() * 0.7;
+      this.speedX = (Math.random() - 0.5) * 0.5;
+      this.rot = Math.random() * Math.PI * 2;
+      this.rotSpeed = (Math.random() - 0.5) * 0.012;
+      this.alpha = 0.12 + Math.random() * 0.3;
+      const palette = window.__wxPetalPalette || COLORS;
+      this.color = palette[Math.floor(Math.random() * palette.length)];
+      this.sway = Math.random() * 0.025;
+      this.swayT = Math.random() * 100;
+    };
+    this.reset();
+    this.y = Math.random() * H;
+  }
+
+  function init(){
+    for(let i = 0; i < 50; i++) petals.push(new Petal());
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    petals.forEach(p => {
+      // Dynamic weather palette swap — fades naturally as petals reset
+      if(window.__wxPetalPalette && p._lastPalette !== window.__wxPetalPalette){
+        p._lastPalette = window.__wxPetalPalette;
+        p.color = window.__wxPetalPalette[Math.floor(Math.random() * window.__wxPetalPalette.length)];
+      }
+      p.swayT += p.sway;
+      p.x += p.speedX + Math.sin(p.swayT) * 0.35;
+      p.y += p.speedY;
+      p.rot += p.rotSpeed;
+      if(p.y > H + 20) p.reset();
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.globalAlpha = p.alpha;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, p.size * 0.55, p.size, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize(); init(); draw();
+})();
+
+// ══════════════════════════════
+//  DYNAMIC WEATHER SYSTEM
+//  Detects time-of-day + live weather.
+//  Caches state in LocalStorage (TTL: 20 min).
+//  Lazy-loads weather canvas assets.
+// ══════════════════════════════
+(function(){
+  'use strict';
+
+  /* ── Constants ── */
+  const LS_KEY     = 'wx_state_v2';
+  const LS_TTL_MS  = 20 * 60 * 1000;   // 20-minute cache
+  const OPEN_METEO = 'https://api.open-meteo.com/v1/forecast';
+
+  /* ── WMO weather-code → internal theme mapping ── */
+  // 0=clear, 1-3=cloud, 45-48=fog, 51-67=drizzle/rain, 71-77=snow, 80-86=showers, 95+=thunder
+  function wmoToTheme(code, hour){
+    if(code >= 71 && code <= 77)  return 'winter';
+    if(code >= 51 && code <= 86)  return 'rain';
+    if(hour >= 21 || hour < 6)    return 'night';
+    return 'default';
+  }
+
+  /* ── Decide theme from local hour only (no-network fallback) ── */
+  function themeFromTime(){
+    const h = new Date().getHours();
+    return (h >= 21 || h < 6) ? 'night' : 'default';
+  }
+
+  /* ── Load & apply theme ── */
+  function applyTheme(theme){
+    const body    = document.body;
+    const badge   = document.getElementById('wx-badge');
+    const badgeLbl= document.getElementById('wx-badge-label');
+    const fog     = document.getElementById('wx-fog');
+
+    // Clear previous weather classes
+    body.classList.remove('wx-night','wx-rain','wx-winter');
+
+    const labels = { night:'night mode', rain:'rain', winter:'snow', default:'' };
+    const icons  = { night:'✦', rain:'◦', winter:'❄', default:'' };
+
+    if(theme === 'night'){
+      body.classList.add('wx-night');
+      fog.classList.add('wx-visible');
+      lazyLoadStars();
+    } else {
+      fog.classList.remove('wx-visible');
+      clearStarCanvas();
+    }
+
+    if(theme === 'rain'){
+      body.classList.add('wx-rain');
+      lazyLoadRain();
+    } else {
+      stopRain();
+    }
+
+    if(theme === 'winter'){
+      body.classList.add('wx-winter');
+      switchToSnowPetals();
+    } else {
+      restorePetals();
+    }
+
+    // Badge
+    if(theme !== 'default'){
+      badgeLbl.textContent = icons[theme] + ' ' + labels[theme];
+      badge.classList.add('wx-visible');
+    } else {
+      badge.classList.remove('wx-visible');
+    }
+  }
+
+  /* ── LocalStorage helpers ── */
+  function saveState(theme){
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify({ theme, ts: Date.now() }));
+    } catch(e){}
+  }
+
+  function loadState(){
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return null;
+      const obj = JSON.parse(raw);
+      if(Date.now() - obj.ts < LS_TTL_MS) return obj.theme;
+    } catch(e){}
+    return null;
+  }
+
+  /* ── Geolocation → Open-Meteo (lazy, no API key) ── */
+  function fetchWeatherAndApply(){
+    if(!navigator.geolocation){ fallback(); return; }
+
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const { latitude: lat, longitude: lon } = pos.coords;
+        const hour = new Date().getHours();
+        const url  = `${OPEN_METEO}?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&current_weather=true&hourly=weathercode&timezone=auto&forecast_days=1`;
+
+        // Lazy: use fetch with low-priority if supported
+        const fetchOpts = { method:'GET' };
+        if('priority' in Request.prototype) fetchOpts.priority = 'low';
+
+        fetch(url, fetchOpts)
+          .then(r => r.ok ? r.json() : Promise.reject())
+          .then(data => {
+            const code  = data.current_weather?.weathercode ?? 0;
+            const theme = wmoToTheme(code, hour);
+            saveState(theme);
+            applyTheme(theme);
+          })
+          .catch(() => fallback());
+      },
+      () => fallback(),
+      { timeout: 5000, maximumAge: LS_TTL_MS }
+    );
+  }
+
+  function fallback(){
+    const theme = themeFromTime();
+    saveState(theme);
+    applyTheme(theme);
+  }
+
+  /* ── Boot ── */
+  function boot(){
+    const cached = loadState();
+    if(cached){
+      applyTheme(cached);               // instant from cache
+      return;
+    }
+    // Apply time-based immediately, then upgrade with real weather
+    applyTheme(themeFromTime());
+    // Defer network call until idle (lazy load)
+    if('requestIdleCallback' in window){
+      requestIdleCallback(() => fetchWeatherAndApply(), { timeout: 4000 });
+    } else {
+      setTimeout(fetchWeatherAndApply, 1500);
+    }
+  }
+
+  // Run after page content is settled
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
+  /* ════════════════════════════
+     LAZY STAR CANVAS (night)
+  ════════════════════════════ */
+  let starAnimId = null;
+
+  function lazyLoadStars(){
+    const canvas = document.getElementById('weather-canvas');
+    const ctx    = canvas.getContext('2d');
+    canvas.classList.add('wx-visible');
+
+    let W, H, stars = [];
+
+    function resize(){
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function makeStar(){
+      return {
+        x:     Math.random() * W,
+        y:     Math.random() * H,
+        r:     0.4 + Math.random() * 1.4,
+        alpha: 0.2 + Math.random() * 0.7,
+        speed: 0.003 + Math.random() * 0.008,
+        phase: Math.random() * Math.PI * 2,
+        glow:  Math.random() > 0.85   // 15% get a soft glow halo
+      };
+    }
+
+    function initStars(){
+      resize();
+      stars = [];
+      const COUNT = Math.min(180, Math.floor(W * H / 8000));
+      for(let i = 0; i < COUNT; i++) stars.push(makeStar());
+    }
+
+    function drawStars(t){
+      ctx.clearRect(0, 0, W, H);
+      stars.forEach(s => {
+        const a = s.alpha * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+        ctx.save();
+        if(s.glow){
+          const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 5);
+          g.addColorStop(0,   `rgba(220,200,255,${a * 0.55})`);
+          g.addColorStop(1,   'rgba(220,200,255,0)');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r * 5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = a;
+        ctx.fillStyle   = '#e8deff';
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+    }
+
+    function loop(t){
+      drawStars(t * 0.001);
+      starAnimId = requestAnimationFrame(loop);
+    }
+
+    window.addEventListener('resize', initStars);
+    if(starAnimId) cancelAnimationFrame(starAnimId);
+    initStars();
+    starAnimId = requestAnimationFrame(loop);
+  }
+
+  function clearStarCanvas(){
+    if(starAnimId){ cancelAnimationFrame(starAnimId); starAnimId = null; }
+    const canvas = document.getElementById('weather-canvas');
+    canvas.classList.remove('wx-visible');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  /* ════════════════════════════
+     LAZY RAIN CANVAS
+  ════════════════════════════ */
+  let rainAnimId = null;
+
+  function lazyLoadRain(){
+    const canvas = document.getElementById('wx-rain-canvas');
+    const ctx    = canvas.getContext('2d');
+    canvas.classList.add('wx-visible');
+
+    let W, H, drops = [];
+
+    function resize(){
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function makeDrop(){
+      return {
+        x:      Math.random() * W,
+        y:      Math.random() * H - H,
+        len:    12 + Math.random() * 18,
+        speed:  6  + Math.random() * 8,
+        alpha:  0.06 + Math.random() * 0.12,
+        angle:  0.22 + Math.random() * 0.08   // slight slant
+      };
+    }
+
+    function initDrops(){
+      resize();
+      drops = [];
+      const COUNT = Math.min(120, Math.floor(W / 8));
+      for(let i = 0; i < COUNT; i++) drops.push(makeDrop());
+    }
+
+    function drawRain(){
+      ctx.clearRect(0, 0, W, H);
+      drops.forEach(d => {
+        d.y += d.speed;
+        d.x -= d.speed * d.angle * 0.5;
+        if(d.y > H + d.len){ d.y = -d.len; d.x = Math.random() * W; }
+        ctx.save();
+        ctx.globalAlpha = d.alpha;
+        ctx.strokeStyle = '#c0d8ff';
+        ctx.lineWidth   = 0.7;
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y);
+        ctx.lineTo(d.x - d.len * d.angle, d.y + d.len);
+        ctx.stroke();
+        ctx.restore();
+      });
+      rainAnimId = requestAnimationFrame(drawRain);
+    }
+
+    window.addEventListener('resize', initDrops);
+    if(rainAnimId) cancelAnimationFrame(rainAnimId);
+    initDrops();
+    rainAnimId = requestAnimationFrame(drawRain);
+  }
+
+  function stopRain(){
+    if(rainAnimId){ cancelAnimationFrame(rainAnimId); rainAnimId = null; }
+    const canvas = document.getElementById('wx-rain-canvas');
+    canvas.classList.remove('wx-visible');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  /* ════════════════════════════
+     SNOW PETAL MODE
+  ════════════════════════════ */
+  const ORIGINAL_PETAL_COLORS = ['#c9a84c','#e8d08a','#a06090','#d4b896','#8b4a6e','#e8b4d8'];
+  const SNOW_PETAL_COLORS     = ['#ddeeff','#c8e4ff','#eef6ff','#b8d8f0','#cce8ff','#f0f8ff'];
+  let snowMode = false;
+
+  function switchToSnowPetals(){
+    if(snowMode) return;
+    snowMode = true;
+    // Override canvas COLORS array — safe global patch
+    window.__wxSnowColors = SNOW_PETAL_COLORS;
+    patchPetalColors(SNOW_PETAL_COLORS);
+  }
+
+  function restorePetals(){
+    if(!snowMode) return;
+    snowMode = false;
+    patchPetalColors(ORIGINAL_PETAL_COLORS);
+  }
+
+  // Intercepts the petal canvas fillStyle by overriding the global array
+  // that the IIFE closure captured (works because it references COLORS by name
+  // inside the same script — we directly patch via a WeakMap trick on ctx)
+  function patchPetalColors(palette){
+    // Since the petal IIFE is a closure, we use a MutationObserver-free approach:
+    // store the desired palette globally; the petal draw loop reads it if present.
+    window.__wxPetalPalette = palette;
+  }
+
+})();
+
+// ══════════════════════════════
+//  AUDIO PLAYER
+// ══════════════════════════════
+const audio    = document.getElementById('bg-audio');
+const audioBtn = document.getElementById('audio-btn');
+let audioReady = false;
+
+function startAudio(){
+  if(audioReady) return;
+  audioReady = true;
+  audio.volume = 0;
+  const playPromise = audio.play();
+  if(playPromise !== undefined){
+    playPromise.then(() => {
+      audioBtn.classList.add('playing');
+      audioBtn.textContent = '♪';
+      // Fade in volume
+      let vol = 0;
+      const fadeIn = setInterval(() => {
+        vol += 0.02;
+        if(vol >= 0.4){ vol = 0.4; clearInterval(fadeIn); }
+        audio.volume = vol;
+      }, 100);
+    }).catch(() => {
+      audioReady = false; // allow retry
+    });
+  }
+}
+
+audioBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if(!audioReady){
+    startAudio();
+    return;
+  }
+  if(audio.paused){
+    audio.play();
+    audioBtn.textContent = '♪';
+    audioBtn.classList.add('playing');
+  } else {
+    audio.pause();
+    audioBtn.textContent = '♩';
+    audioBtn.classList.remove('playing');
+  }
+});
+
+// Auto-start on any user interaction
+function onFirstInteraction(){
+  startAudio();
+  document.removeEventListener('click', onFirstInteraction);
+  document.removeEventListener('scroll', onFirstInteraction);
+  document.removeEventListener('touchstart', onFirstInteraction);
+  document.removeEventListener('keydown', onFirstInteraction);
+}
+document.addEventListener('click', onFirstInteraction, { passive: true });
+document.addEventListener('scroll', onFirstInteraction, { passive: true });
+document.addEventListener('touchstart', onFirstInteraction, { passive: true });
+document.addEventListener('keydown', onFirstInteraction, { passive: true });
+
+// ══════════════════════════════
+//  GSAP ANIMATIONS
+// ══════════════════════════════
+gsap.registerPlugin(ScrollTrigger);
+
+// Hero entrance
+const heroTl = gsap.timeline({ delay: 0.3 });
+heroTl
+  .fromTo('#h-tag',   { opacity:0, y:20 }, { opacity:1, y:0, duration:1.2, ease:'power2.out' }, 0)
+  .fromTo('#h-line1', { opacity:0, scaleX:0 }, { opacity:1, scaleX:1, duration:1, ease:'power2.inOut' }, 0.5)
+  .fromTo('#h-title', { opacity:0, y:30 }, { opacity:1, y:0, duration:1.5, ease:'power3.out' }, 0.8)
+  .fromTo('#h-line2', { opacity:0, scaleX:0 }, { opacity:1, scaleX:1, duration:1, ease:'power2.inOut' }, 1.3)
+  .fromTo('#h-sub',   { opacity:0, y:20 }, { opacity:1, y:0, duration:1.2, ease:'power2.out' }, 1.6)
+  .fromTo('#h-scroll',{ opacity:0 }, { opacity:1, duration:1 }, 2.6);
+
+// Chapter dividers
+document.querySelectorAll('.chapter-divider').forEach(el => {
+  gsap.fromTo(el,
+    { opacity:0, y:24 },
+    { opacity:1, y:0, duration:1, ease:'power2.out',
+      scrollTrigger:{ trigger:el, start:'top 82%', once:true }
+    }
+  );
+});
+
+// Image wrappers
+document.querySelectorAll('.img-wrapper').forEach(el => {
+  gsap.fromTo(el,
+    { opacity:0, scale:.96 },
+    { opacity:1, scale:1, duration:1.4, ease:'power3.out',
+      scrollTrigger:{ trigger:el, start:'top 78%', once:true }
+    }
+  );
+});
+
+// Speech bubbles
+document.querySelectorAll('.bubble-wrap').forEach((el, i) => {
+  const panel = el.closest('.panel');
+  const fromX = el.style.left && !el.style.right ? -20 : 20;
+  gsap.fromTo(el,
+    { opacity:0, x:fromX },
+    { opacity:1, x:0, duration:1, delay: 0.6 + i * 0.1, ease:'back.out(1.4)',
+      scrollTrigger:{ trigger: panel || el, start:'top 65%', once:true }
+    }
+  );
+});
+
+// Captions
+document.querySelectorAll('.panel-caption').forEach(el => {
+  gsap.fromTo(el,
+    { opacity:0, y:20 },
+    { opacity:1, y:0, duration:1, ease:'power2.out',
+      scrollTrigger:{ trigger:el, start:'top 85%', once:true }
+    }
+  );
+});
+
+// Quotes
+document.querySelectorAll('.quote-block').forEach(el => {
+  gsap.fromTo(el,
+    { opacity:0, x:-30 },
+    { opacity:1, x:0, duration:1.2, ease:'power2.out',
+      scrollTrigger:{ trigger:el, start:'top 80%', once:true }
+    }
+  );
+});
+
+// Withered Flower chapter divider
+gsap.fromTo('.cd-wf',
+  { opacity:0, y:20 },
+  { opacity:1, y:0, duration:1, ease:'power2.out',
+    scrollTrigger:{ trigger:'.cd-wf', start:'top 82%', once:true }
+  }
+);
+
+// Withered Flower — image fade in
+gsap.fromTo('.wf-img-wrapper',
+  { opacity:0, scale:0.96 },
+  { opacity:1, scale:1, duration:1.5, ease:'power3.out',
+    scrollTrigger:{ trigger:'#withered-flower-section', start:'top 75%', once:true }
+  }
+);
+
+// Withered Flower — text fade in (delayed after image)
+gsap.fromTo('.wf-text-block',
+  { opacity:0, y:24 },
+  { opacity:1, y:0, duration:1.2, ease:'power2.out', delay:0.8,
+    scrollTrigger:{ trigger:'#withered-flower-section', start:'top 75%', once:true }
+  }
+);
+
+// Password section
+gsap.fromTo('#secret-section',
+  { opacity:0, y:40 },
+  { opacity:1, y:0, duration:1.2, ease:'power2.out',
+    scrollTrigger:{ trigger:'#secret-section', start:'top 80%', once:true }
+  }
+);
+
+// ══════════════════════════════
+//  PASSWORD LOGIC
+// ══════════════════════════════
+const input    = document.getElementById('password-input');
+const btn      = document.getElementById('unlock-btn');
+const errMsg   = document.getElementById('pw-error');
+const SECRET   = '48';
+
+function tryUnlock(){
+  const val = input.value.trim();
+  if(val === SECRET){
+    triggerReveal();
+  } else {
+    errMsg.style.opacity = '1';
+    gsap.fromTo(input,
+      { x:-10 },
+      { x:0, duration:0.5, ease:'elastic.out(1,0.3)',
+        keyframes:{ x:[-10, 10, -8, 8, -5, 5, 0] }
+      }
+    );
+    gsap.fromTo(input,
+      { borderColor:'rgba(192,96,96,0.8)' },
+      { borderColor:'rgba(201,168,76,0.4)', duration:1.5, delay:0.3 }
+    );
+    setTimeout(() => { errMsg.style.opacity = '0'; }, 2800);
+  }
+}
+
+btn.addEventListener('click', tryUnlock);
+input.addEventListener('keydown', e => { if(e.key === 'Enter') tryUnlock(); });
+
+function triggerReveal(){
+  btn.disabled = true;
+  input.disabled = true;
+
+  // ── Phase 1: fade out the lock-box form ──
+  const lockBox = document.querySelector('.lock-box');
+  gsap.to(lockBox, {
+    opacity:0, y:-24, duration:0.7, ease:'power2.in',
+    onComplete: () => {
+      lockBox.style.display = 'none';
+      startEnvelopeAnimation();
+    }
+  });
+}
+
+// ══════════════════════════════
+//  ENVELOPE ANIMATION SEQUENCE
+// ══════════════════════════════
+function startEnvelopeAnimation(){
+  const stage  = document.getElementById('envelope-stage');
+  const flap   = document.getElementById('env-flap');
+  const seal   = document.getElementById('env-seal');
+  const letter = document.getElementById('env-letter');
+  const body   = document.getElementById('env-body');
+
+  // Show stage
+  stage.classList.add('visible');
+
+  // Apply current lang to letter text immediately
+  const letterTxt = letter.querySelector('[data-en]');
+  if(letterTxt){
+    letterTxt.innerHTML = letterTxt.getAttribute(window._siteLang === 'fa' ? 'data-fa' : 'data-en');
+  }
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+      // After envelope fully plays → wait longer so user can read, then launch final reveal
+      setTimeout(() => {
+        gsap.to(stage, {
+          opacity:0, y:-40, duration:0.9, ease:'power2.in',
+          onComplete: () => {
+            document.getElementById('secret-section').style.display = 'none';
+            showReveal();
+          }
+        });
+      }, 3200);  // ← was 900ms — now 3.2s reading window
+    }
+  });
+
+  // ── 0.0s  envelope fades in ──
+  tl.fromTo(stage,
+    { opacity:0, scale:0.88, y:30 },
+    { opacity:1, scale:1,    y:0, duration:1.0, ease:'power3.out' }
+  );
+
+  // ── 0.6s  gentle entrance tilt (3D) ──
+  tl.fromTo('#the-envelope',
+    { rotationY:-8, rotationX:4 },
+    { rotationY:0,  rotationX:0, duration:1.1, ease:'power2.out' },
+    0.3
+  );
+
+  // ── 1.2s  seal pulses then fades ──
+  tl.to(seal, {
+    scale:1.18,
+    boxShadow:'0 0 40px rgba(201,168,76,0.8)',
+    duration:0.4, ease:'power2.out'
+  }, 1.0);
+  tl.to(seal, {
+    scale:0, opacity:0, duration:0.4, ease:'back.in(1.7)'
+  }, 1.5);
+
+  // ── 1.9s  flap rotates open (rotationX: 0 → -185deg) ──
+  tl.to(flap, {
+    rotationX: -185,
+    duration: 1.3,
+    ease: 'power2.inOut',
+    transformOrigin: 'top center',
+    transformStyle: 'preserve-3d'
+  }, 1.7);
+
+  // ── 2.4s  letter rises up from envelope body ──
+  tl.to(letter, {
+    opacity:1,
+    y: '-68%',       // rises above envelope opening
+    duration: 1.2,
+    ease: 'power3.out',
+    pointerEvents:'none'
+  }, 2.4);
+
+  // ── 3.1s  subtle glow on letter ──
+  tl.fromTo(letter,
+    { boxShadow:'0 0 0px rgba(201,168,76,0)' },
+    { boxShadow:'0 0 40px rgba(201,168,76,0.25)', duration:0.8, ease:'power2.out' },
+    3.0
+  );
+
+  // ── petal burst at peak moment ──
+  tl.call(() => burstPetals(), null, 2.6);
+}
+
+function showReveal(){
+  const rev = document.getElementById('secret-reveal');
+  rev.style.display = 'block';
+
+  // Scroll to reveal smoothly
+  setTimeout(() => {
+    rev.scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 100);
+
+  // Petal burst
+  burstPetals();
+
+  // Animate reveal in
+  gsap.fromTo(rev,
+    { opacity:0, y:50 },
+    { opacity:1, y:0, duration:1.6, ease:'power3.out',
+      onComplete:() => {
+        // Start typewriter
+        setTimeout(typeMessage, 300);
+      }
+    }
+  );
+
+  // Animate the image inside
+  const revImg = rev.querySelector('.reveal-img-wrapper');
+  if(revImg){
+    gsap.fromTo(revImg,
+      { opacity:0, scale:.95 },
+      { opacity:1, scale:1, duration:1.8, ease:'power3.out', delay:0.3 }
+    );
+  }
+
+  // Animate final message box
+  const msgBox = rev.querySelector('.final-message');
+  if(msgBox){
+    gsap.fromTo(msgBox,
+      { opacity:0, y:30 },
+      { opacity:1, y:0, duration:1.2, ease:'power2.out', delay:0.8 }
+    );
+  }
+}
+
+function typeMessage(){
+  const msgEn = "Even the chapters that make you shy,\nI love them because they are yours.";
+  const msgFa = "حتی فصل‌هایی که شرمنده‌ات می‌کنند،\nدوستشان دارم چون از توست.";
+  const msg = window._siteLang === 'fa' ? msgFa : msgEn;
+  const el  = document.getElementById('final-text');
+  el.innerHTML = '';
+  let i = 0;
+
+  function type(){
+    if(i < msg.length){
+      if(msg[i] === '\n'){
+        el.innerHTML += '<br>';
+      } else {
+        el.innerHTML += msg[i];
+      }
+      i++;
+      setTimeout(type, 50 + Math.random() * 45);
+    }
+  }
+  type();
+}
+
+// ══════════════════════════════
+//  MOOD SELECTOR SYSTEM
+// ══════════════════════════════
+(function(){
+
+  // ── Palette definitions (CSS variable values per mood) ──
+  const PALETTES = {
+    midnight:{
+      '--black':'#0a080d','--deep':'#110d1a','--mauve':'#3b1f4a','--mauve2':'#5c2e72',
+      '--gold':'#c9a84c','--gold2':'#e8d08a','--gold3':'#f5e9c0','--cream':'#fdf6e3','--text':'#d4b896'
+    },
+    rose:{
+      '--black':'#150810','--deep':'#1e0a14','--mauve':'#5a1530','--mauve2':'#8b2550',
+      '--gold':'#c47c8a','--gold2':'#e8aab8','--gold3':'#f5d8de','--cream':'#fff0f3','--text':'#d4a0a8'
+    },
+    ivory:{
+      '--black':'#f0ebe0','--deep':'#e8e0d0','--mauve':'#c8b89a','--mauve2':'#8b6a4a',
+      '--gold':'#8b6a2a','--gold2':'#6b4a1a','--gold3':'#3a2a0a','--cream':'#2a1a0a','--text':'#4a3a2a'
+    }
+  };
+
+  // hero-bg gradients per mood
+  const HERO_GRADS = {
+    midnight:'radial-gradient(ellipse at 50% 40%,#2a0d3a 0%,#110d1a 50%,#0a080d 100%)',
+    rose:    'radial-gradient(ellipse at 50% 40%,#4a0a25 0%,#1e0a14 50%,#150810 100%)',
+    ivory:   'radial-gradient(ellipse at 50% 40%,#d8c8a8 0%,#e8e0d0 50%,#f0ebe0 100%)'
+  };
+
+  let currentMood = 'midnight';
+
+  function applyMood(mood, animate){
+    const root    = document.documentElement;
+    const palette = PALETTES[mood];
+    const heroBg  = document.querySelector('.hero-bg');
+
+    // Update body class for structural overrides (bubble bg, etc.)
+    document.body.classList.remove('mood-midnight','mood-rose','mood-ivory');
+    document.body.classList.add('mood-' + mood);
+
+    if(!animate){
+      // Instant — set vars directly
+      Object.entries(palette).forEach(([k,v]) => root.style.setProperty(k, v));
+      if(heroBg) heroBg.style.background = HERO_GRADS[mood];
+      return;
+    }
+
+    // Animated — use GSAP to tween CSS vars via a proxy object
+    const proxy = {};
+    const cur   = PALETTES[currentMood];
+    Object.keys(palette).forEach(k => { proxy[k] = cur[k] || palette[k]; });
+
+    // We can't tween hex strings directly, so we cross-fade via opacity trick:
+    // Create a temporary overlay element that transitions
+    const overlay = document.createElement('div');
+    overlay.style.cssText =
+      'position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:0;' +
+      'background:' + palette['--black'] + ';';
+    document.body.appendChild(overlay);
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        // Apply all CSS vars at peak opacity
+        Object.entries(palette).forEach(([k,v]) => root.style.setProperty(k, v));
+        if(heroBg) heroBg.style.background = HERO_GRADS[mood];
+        // Fade overlay back out
+        gsap.to(overlay, {
+          opacity:0, duration:0.5, ease:'power2.out',
+          onComplete:() => overlay.remove()
+        });
+      }
+    });
+    tl.to(overlay, { opacity:0.7, duration:0.4, ease:'power2.inOut' })
+      .to(overlay, { opacity:0.0, duration:0.0 }); // pause handled by onComplete
+  }
+
+  // ── Wire up dots ──
+  document.querySelectorAll('.mood-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      const mood = dot.dataset.mood;
+      if(mood === currentMood) return;
+
+      // Update active state
+      document.querySelectorAll('.mood-dot').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+
+      applyMood(mood, true);
+      currentMood = mood;
+    });
+  });
+
+  // Apply default on load
+  applyMood('midnight', false);
+
+})();
+
+// ══════════════════════════════
+//  LANGUAGE SWITCHER SYSTEM
+// ══════════════════════════════
+(function(){
+  // ── Detect browser language ──
+  const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+  window._siteLang  = browserLang.startsWith('fa') ? 'fa' : 'en';
+
+  const toggle   = document.getElementById('lang-toggle');
+  const lblEn    = document.getElementById('lbl-en');
+  const lblFa    = document.getElementById('lbl-fa');
+
+  // Selectors for all translatable elements:
+  // [data-en] on block elements whose innerHTML should be swapped
+  // [data-en] on inline text nodes (span inside bubble, cite, etc.)
+  function applyLang(lang, animate){
+    const isFA = lang === 'fa';
+
+    // Update toggle UI
+    if(isFA){
+      toggle.classList.add('fa-active');
+      toggle.setAttribute('aria-checked','true');
+      lblEn.classList.remove('active');
+      lblFa.classList.add('active');
+    } else {
+      toggle.classList.remove('fa-active');
+      toggle.setAttribute('aria-checked','false');
+      lblEn.classList.add('active');
+      lblFa.classList.remove('active');
+    }
+
+    // Set RTL/LTR for Persian readability
+    document.documentElement.setAttribute('lang', isFA ? 'fa' : 'en');
+
+    // Collect all elements that have data-en
+    const targets = document.querySelectorAll('[data-en]');
+
+    if(!animate){
+      targets.forEach(el => {
+        const val = el.getAttribute(isFA ? 'data-fa' : 'data-en');
+        if(val !== null) el.innerHTML = val;
+      });
+      return;
+    }
+
+    // GSAP fade swap
+    gsap.to(targets, {
+      opacity: 0,
+      duration: 0.25,
+      ease: 'power2.in',
+      stagger: 0.008,
+      onComplete: () => {
+        targets.forEach(el => {
+          const val = el.getAttribute(isFA ? 'data-fa' : 'data-en');
+          if(val !== null) el.innerHTML = val;
+        });
+        gsap.to(targets, {
+          opacity: 1,
+          duration: 0.45,
+          ease: 'power2.out',
+          stagger: 0.008
+        });
+      }
+    });
+  }
+
+  // Apply on page load (no animation)
+  applyLang(window._siteLang, false);
+
+  // Toggle click handler
+  function doToggle(){
+    window._siteLang = window._siteLang === 'fa' ? 'en' : 'fa';
+    applyLang(window._siteLang, true);
+  }
+  toggle.addEventListener('click', doToggle);
+  toggle.addEventListener('keydown', e => {
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); doToggle(); }
+  });
+
+})();
+
+
+function burstPetals(){
+  const container = document.getElementById('burst-container');
+  container.innerHTML = '';
+
+  const COLS = ['#c9a84c','#e8d08a','#a06090','#d4b896','#e8b4d8','#fff0c8','#8b4a6e'];
+  const CX   = window.innerWidth / 2;
+  const CY   = window.innerHeight / 2;
+  const COUNT = 90;
+
+  for(let i = 0; i < COUNT; i++){
+    const p = document.createElement('div');
+    p.className = 'burst-petal';
+    const angle = (i / COUNT) * 360 + (Math.random() - 0.5) * 15;
+    const dist  = 180 + Math.random() * 320;
+    const dur   = 1.1 + Math.random() * 1.1;
+    const size  = 7 + Math.random() * 14;
+    p.style.cssText = `
+      left:${CX}px;top:${CY}px;
+      width:${size}px;height:${size * 1.6}px;
+      background:${COLS[Math.floor(Math.random() * COLS.length)]};
+      --ang:${angle}deg;
+      --dist:-${dist}px;
+      --dur:${dur}s;
+      animation-delay:${Math.random() * 0.25}s;
+      border-radius:50% 50% 50% 0;
+      opacity:0;
+    `;
+    container.appendChild(p);
+  }
+
+  setTimeout(() => { container.innerHTML = ''; }, 4000);
+}
+
+// ══════════════════════════════
+//  CURSOR SPARKLE (desktop only)
+// ══════════════════════════════
+(function(){
+  if(window.matchMedia('(pointer:coarse)').matches) return;
+  let lastTime = 0;
+  document.addEventListener('mousemove', e => {
+    const now = Date.now();
+    if(now - lastTime < 40) return; // throttle
+    lastTime = now;
+    const s = document.createElement('div');
+    s.className = 'cursor-spark';
+    s.style.left = e.clientX + 'px';
+    s.style.top  = e.clientY + 'px';
+    document.body.appendChild(s);
+    gsap.to(s, {
+      opacity:0, scale:2.5, duration:0.6, ease:'power2.out',
+      onComplete:() => s.remove()
+    });
+  });
+})();
+</script>
+<script>
+  window.addEventListener('load', function() {
+      const loaderText = document.getElementById('loader-text');
+      const isFa = window._siteLang === 'fa';
+      
+      setTimeout(() => { if(loaderText) loaderText.innerText = isFa ? "در حال جمع‌آوری گلبرگ‌ها..." : "Gathering petals..."; }, 1500);
+      setTimeout(() => { if(loaderText) loaderText.innerText = isFa ? "تقریباً رسیدیم، گُلِ من." : "Almost there, Flower."; }, 3000);
+
+      setTimeout(() => {
+          gsap.to("#preloader", {
+              duration: 1.5,
+              opacity: 0,
+              y: -100,
+              onComplete: () => {
+                  document.getElementById('preloader').style.display = "none";
+              },
+              ease: "power4.inOut"
+          });
+      }, 4500); 
+  });
+</script>
+</body>
+  </html>
