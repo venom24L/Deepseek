@@ -1,1036 +1,3043 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>✨ Starlight Love ✨</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Flower — Breathing Heart</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=IM+Fell+English:ital@0;1&family=Pinyon+Script&display=swap" rel="stylesheet">
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
+    </script>
+
+    <script>
+        (function() {
+            var bl = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+            window._siteLang = bl.startsWith('fa') ? 'fa' : 'en';
+            document.addEventListener('DOMContentLoaded', function() {
+                var lt = document.getElementById('loader-text');
+                if (lt && window._siteLang === 'fa') {
+                    lt.textContent = lt.getAttribute('data-fa') || lt.textContent;
+                }
+            });
+        })();
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js">
+    </script>
+
     <style>
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0d0d0d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loader-content {
+            text-align: center;
+            color: #d4af37;
+            font-family: 'Serif', serif;
+        }
+
+        .flower-icon {
+            font-size: 50px;
+            animation: pulse 2s infinite;
+        }
+
+        #loader-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+        }
+
+        :root {
+            --black: #0a080d;
+            --deep: #110d1a;
+            --mauve: #3b1f4a;
+            --mauve2: #5c2e72;
+            --gold: #c9a84c;
+            --gold2: #e8d08a;
+            --gold3: #f5e9c0;
+            --cream: #fdf6e3;
+            --text: #d4b896;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: #0a0a1a;
-            font-family: 'cursive', 'Comic Sans MS', sans-serif;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            -webkit-user-select: none;
+        html {
+            scroll-behavior: smooth;
         }
 
-        body.lang-fa {
-            font-family: 'Tahoma', 'Segoe UI', sans-serif;
-            direction: rtl;
+        body {
+            background: var(--black);
+            color: var(--text);
+            font-family: 'Cormorant Garamond', serif;
+            overflow-x: hidden;
+            cursor: crosshair;
         }
 
-        #starCanvas {
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--black);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        #petal-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
+            pointer-events: none;
+            z-index: 1;
         }
 
-        .overlay {
+        #audio-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            width: 46px;
+            height: 46px;
+            border: 1px solid var(--gold);
+            border-radius: 50%;
+            background: rgba(10, 8, 13, 0.85);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            font-size: 20px;
+            transition: all .4s ease;
+            box-shadow: 0 0 20px rgba(201, 168, 76, 0.15);
+        }
+        #audio-btn:hover {
+            background: var(--gold);
+            color: var(--black);
+            transform: scale(1.1);
+        }
+        #audio-btn.playing {
+            box-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
+        }
+
+        #hero {
             position: relative;
-            z-index: 10;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            pointer-events: none;
-            padding: 5vmin;
-        }
-
-        .overlay > * {
-            pointer-events: auto;
-        }
-
-        .lang-btn {
-            position: fixed;
-            top: 2vh;
-            right: 2vh;
-            width: 10vmin;
-            height: 10vmin;
-            max-width: 50px;
-            max-height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            color: #ffd700;
-            font-size: clamp(12px, 3vmin, 14px);
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 200;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-shadow: 0 0 8px #ffd700;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
-            transition: 0.3s;
-        }
-
-        .lang-btn:hover {
-            background: rgba(255, 215, 0, 0.15);
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
-            transform: scale(1.1);
-        }
-
-        .title {
-            font-size: clamp(1.8rem, 8vmin, 3.5rem);
-            color: #fff5e6;
             text-align: center;
-            margin-bottom: 2vh;
-            text-shadow: 0 0 20px #ffb6c1, 0 0 40px #ff69b4, 0 0 80px #ff1493;
-            animation: titleGlow 3s ease-in-out infinite alternate, fadeInDown 1s ease-out;
-            pointer-events: none;
+            overflow: hidden;
+            z-index: 2;
         }
-
-        @keyframes titleGlow {
-            0% { text-shadow: 0 0 20px #ffb6c1, 0 0 40px #ff69b4, 0 0 80px #ff1493; }
-            100% { text-shadow: 0 0 30px #ffa07a, 0 0 60px #ff4500, 0 0 100px #ff1493; }
-        }
-
-        @keyframes fadeInDown {
-            0% { opacity: 0; transform: translateY(-6vh); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .counter-container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(5px);
-            border-radius: 20px;
-            padding: 2vmin 5vmin;
-            margin: 1.5vh 0;
-            border: 1px solid rgba(255, 192, 203, 0.3);
-            text-align: center;
-            color: #ffe4e1;
-            font-size: clamp(0.9rem, 2.5vmin, 1.2rem);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .counter-digits {
-            font-size: clamp(1.2rem, 5vmin, 2rem);
-            font-weight: bold;
-            color: #ffd700;
-            display: flex;
-            gap: 1vmin;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 1vmin 0;
-        }
-
-        .counter-digits span {
-            background: rgba(255, 215, 0, 0.1);
-            padding: 1vmin 2vmin;
-            border-radius: 10px;
-            border: 1px solid gold;
-            min-width: 60px;
-        }
-
-        .constellation-info {
-            color: #dcdcdc;
-            margin: 1vh 0;
-            font-size: clamp(0.8rem, 2vmin, 1.1rem);
-            text-align: center;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 1vmin 3vmin;
-            border-radius: 30px;
-            backdrop-filter: blur(4px);
-        }
-
-        .constellation-progress {
-            color: #ffd700;
-            font-weight: bold;
-        }
-
-        .revealed-message {
-            display: none;
-            font-size: clamp(1.5rem, 6vmin, 2.2rem);
-            color: #fffacd;
-            text-align: center;
-            margin: 2vh 0;
-            animation: heartBeat 1.5s infinite, glowPulse 2s infinite;
-            text-shadow: 0 0 30px gold;
-        }
-
-        .revealed-message.show {
-            display: block;
-        }
-
-        @keyframes heartBeat {
-            0%, 40%, 80%, 100% { transform: scale(1); }
-            20%, 60% { transform: scale(1.15); }
-        }
-
-        @keyframes glowPulse {
-            0%, 100% { text-shadow: 0 0 20px gold; }
-            50% { text-shadow: 0 0 40px #ffb6c1, 0 0 80px #ff69b4; }
-        }
-
-        .envelope-wrapper {
-            perspective: 1200px;
-            margin: 3vh 0;
-            display: flex;
-            justify-content: center;
-        }
-
-        .envelope {
-            position: relative;
-            width: min(80vw, 320px);
-            aspect-ratio: 16 / 10;
-            max-width: 320px;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .envelope-body {
+        .hero-bg {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 60%;
-            background: linear-gradient(145deg, #f5d5e0, #e6b3c8);
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            border: 1px solid #d48ca8;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 40%, #2a0d3a 0%, #110d1a 50%, #0a080d 100%);
+            animation: breathe 8s ease-in-out infinite;
+            transform-origin: center center;
+        }
+        @keyframes breathe {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.95;
+            }
+            50% {
+                transform: scale(1.08);
+                opacity: 1;
+            }
+        }
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 45%, rgba(201, 168, 76, 0.08) 0%, transparent 70%);
+            animation: glowPulse 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes glowPulse {
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+        .hero-title {
+            animation: textHeartbeat 8s ease-in-out infinite;
+        }
+        @keyframes textHeartbeat {
+            0%,
+            100% {
+                text-shadow: 0 0 30px rgba(201, 168, 76, 0.3), 0 0 80px rgba(201, 168, 76, 0.1);
+            }
+            50% {
+                text-shadow: 0 0 50px rgba(201, 168, 76, 0.6), 0 0 120px rgba(201, 168, 76, 0.25);
+            }
+        }
+
+        .hero-line {
+            width: 180px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 16px auto;
+            opacity: 0;
+        }
+        .hero-tag {
+            font-size: 11px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            opacity: 0;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-title {
+            font-family: 'Pinyon Script', cursive;
+            font-size: clamp(58px, 12vw, 120px);
+            color: var(--gold2);
+            line-height: 1;
+            text-shadow: 0 0 60px rgba(201, 168, 76, .4), 0 0 120px rgba(201, 168, 76, .15);
+            opacity: 0;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-sub {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            font-size: clamp(14px, 2.5vw, 20px);
+            color: var(--text);
+            letter-spacing: 1px;
+            max-width: 500px;
+            opacity: 0;
+            line-height: 1.9;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            z-index: 2;
+        }
+        .hero-scroll-hint span {
+            font-size: 10px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+        .scroll-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+            animation: scrollPulse 2s ease infinite;
+        }
+        @keyframes scrollPulse {
+            0%,
+            100% {
+                opacity: .3;
+                transform: scaleY(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scaleY(1.1);
+            }
+        }
+
+        main {
+            position: relative;
             z-index: 2;
         }
 
-        .envelope-flap {
+        .chapter-divider {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            max-width: 600px;
+            margin: 80px auto 40px;
+            padding: 0 30px;
+            opacity: 0;
+        }
+        .chapter-divider::before,
+        .chapter-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold));
+        }
+        .chapter-divider::after {
+            background: linear-gradient(90deg, var(--gold), transparent);
+        }
+        .chapter-divider span {
+            font-size: 10px;
+            letter-spacing: 4px;
+            color: var(--gold);
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .panel {
+            max-width: 780px;
+            margin: 0 auto 120px;
+            padding: 0 24px;
+            position: relative;
+        }
+
+        .img-wrapper {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(201, 168, 76, .2);
+            box-shadow: 0 0 80px rgba(59, 31, 74, .5), inset 0 0 30px rgba(0, 0, 0, .5);
+            opacity: 0;
+            transform: scale(.96);
+        }
+        .img-wrapper img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            filter: sepia(15%) contrast(1.05) brightness(.92);
+            transition: filter 1.2s ease;
+        }
+        .img-wrapper:hover img {
+            filter: sepia(5%) contrast(1.08) brightness(1);
+        }
+        .img-wrapper::before,
+        .img-wrapper::after {
+            content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 0;
-            border-left: 50% solid transparent;
-            border-right: 50% solid transparent;
-            border-bottom: 40% solid #f8c8d8;
-            border-top: none;
+            width: 28px;
+            height: 28px;
+            border-color: var(--gold);
+            border-style: solid;
             z-index: 3;
-            transform-origin: top center;
-            transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.3));
-            /* Flap pointing down initially */
-            border-left-width: 50%;
-            border-right-width: 50%;
-            border-bottom-width: 50%;
+            pointer-events: none;
+        }
+        .img-wrapper::before {
+            top: 8px;
+            left: 8px;
+            border-width: 1px 0 0 1px;
+        }
+        .img-wrapper::after {
+            bottom: 8px;
+            right: 8px;
+            border-width: 0 1px 1px 0;
         }
 
-        .envelope.open .envelope-flap {
-            transform: rotateX(180deg);
-            border-bottom-color: #f0a5bc;
-        }
-
-        .letter-container {
+        .bubble-wrap {
             position: absolute;
-            bottom: 8%;
-            left: 6%;
-            width: 88%;
-            perspective: 1500px;
-            z-index: 1;
-            transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.5s;
-            transform: translateY(20px);
+            z-index: 10;
             opacity: 0;
             pointer-events: none;
         }
-
-        .envelope.open .letter-container {
-            transform: translateY(-80%);
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .letter-inner {
+        .bubble {
+            background: var(--cream);
+            color: #2a1a0a;
+            border-radius: 16px 16px 16px 4px;
+            padding: 12px 18px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 13px;
+            line-height: 1.7;
+            max-width: 220px;
+            box-shadow: 2px 4px 20px rgba(0, 0, 0, .6);
             position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.8s ease;
-            min-height: 140px;
+            border: 1px solid rgba(201, 168, 76, .3);
         }
-
-        .letter-inner.flipped {
-            transform: rotateY(180deg);
-        }
-
-        .letter-front, .letter-back {
+        .bubble::after {
+            content: '';
             position: absolute;
-            width: 100%;
-            min-height: 140px;
-            backface-visibility: hidden;
-            background: #fffef0;
-            border-radius: 12px;
-            padding: 4vmin;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-            border: 2px solid #f4c2c2;
-            color: #4a2c2c;
-            font-size: clamp(0.75rem, 2.5vmin, 1rem);
-            line-height: 1.5;
-            box-sizing: border-box;
+            bottom: -10px;
+            left: 14px;
+            border-width: 10px 8px 0 0;
+            border-style: solid;
+            border-color: var(--cream) transparent transparent transparent;
         }
-
-        .letter-back {
-            transform: rotateY(180deg);
-            background: #fff8f0;
-            border: 2px solid #f4c2c2;
+        .bubble.right {
+            border-radius: 16px 16px 4px 16px;
         }
-
-        .flip-btn {
-            position: absolute;
-            bottom: 1vmin;
-            right: 1vmin;
-            background: #f8b6d0;
-            border: none;
-            border-radius: 15px;
-            padding: 1vmin 3vmin;
-            color: white;
+        .bubble.right::after {
+            left: auto;
+            right: 14px;
+            border-width: 10px 0 0 8px;
+        }
+        .bubble-name {
+            font-size: 10px;
             font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--mauve2);
+            margin-bottom: 4px;
+        }
+
+        .panel-caption {
+            margin-top: 28px;
+            padding: 0 8px;
+            opacity: 0;
+        }
+        .panel-caption p {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            font-size: clamp(15px, 2vw, 18px);
+            line-height: 2;
+            color: var(--text);
+            text-align: center;
+        }
+        .panel-caption .gold-word {
+            color: var(--gold2);
+            font-style: normal;
+        }
+
+        .quote-block {
+            max-width: 580px;
+            margin: 0 auto 120px;
+            padding: 40px;
+            border-left: 2px solid var(--gold);
+            background: linear-gradient(135deg, rgba(59, 31, 74, .15), transparent);
+            position: relative;
+            opacity: 0;
+        }
+        .quote-block::before {
+            content: '\201C';
+            position: absolute;
+            top: 10px;
+            left: 16px;
+            font-size: 80px;
+            color: var(--gold);
+            opacity: .2;
+            font-family: serif;
+            line-height: 1;
+        }
+        .quote-block p {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            font-size: 18px;
+            line-height: 2;
+            color: var(--text);
+        }
+        .quote-block cite {
+            display: block;
+            margin-top: 16px;
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        #secret-section {
+            max-width: 600px;
+            margin: 0 auto 160px;
+            padding: 0 24px;
+            text-align: center;
+            position: relative;
+            opacity: 0;
+        }
+        .lock-box {
+            border: 1px solid var(--gold);
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(59, 31, 74, .3), rgba(10, 8, 13, .8));
+            box-shadow: 0 0 60px rgba(201, 168, 76, .08), inset 0 0 40px rgba(0, 0, 0, .5);
+            position: relative;
+            overflow: hidden;
+        }
+        .lock-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(45deg,
+                    transparent,
+                    transparent 40px,
+                    rgba(201, 168, 76, .02) 40px,
+                    rgba(201, 168, 76, .02) 41px);
+        }
+        .lock-icon {
+            font-size: 48px;
+            margin-bottom: 24px;
+            display: block;
+            filter: drop-shadow(0 0 12px rgba(201, 168, 76, .5));
+        }
+        .lock-title {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 36px;
+            color: var(--gold2);
+            margin-bottom: 8px;
+        }
+        .lock-hint {
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: var(--text);
+            opacity: .6;
+            text-transform: uppercase;
+            margin-bottom: 36px;
+        }
+
+        #password-input {
+            background: rgba(0, 0, 0, .5);
+            border: 1px solid rgba(201, 168, 76, .4);
+            border-radius: 0;
+            padding: 14px 24px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            color: var(--gold2);
+            text-align: center;
+            letter-spacing: 6px;
+            width: 160px;
+            outline: none;
+            transition: border-color .3s, box-shadow .3s;
+        }
+        #password-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(201, 168, 76, .2);
+        }
+        #password-input::placeholder {
+            color: rgba(201, 168, 76, .3);
+        }
+
+        #unlock-btn {
+            display: block;
+            margin: 20px auto 0;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 13px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            padding: 12px 36px;
             cursor: pointer;
-            font-size: 0.8rem;
-            z-index: 5;
+            transition: all .4s ease;
+            position: relative;
+            z-index: 1;
+        }
+        #unlock-btn:hover {
+            background: var(--gold);
+            color: var(--black);
         }
 
-        .letter-back .flip-btn {
-            left: 1vmin;
-            right: auto;
+        #pw-error {
+            margin-top: 14px;
+            font-size: 12px;
+            color: #c06060;
+            letter-spacing: 2px;
+            opacity: 0;
+            transition: opacity .3s;
+            position: relative;
+            z-index: 1;
         }
 
-        .player {
+        #secret-reveal {
+            display: none;
+            text-align: center;
+            padding: 0 24px 160px;
+            position: relative;
+            opacity: 0;
+        }
+        .reveal-img-wrapper {
+            max-width: 780px;
+            margin: 0 auto 48px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--gold);
+            box-shadow: 0 0 100px rgba(201, 168, 76, .2);
+        }
+        .reveal-img-wrapper img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            filter: sepia(10%) brightness(.95);
+        }
+
+        .final-message {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 48px 40px;
+            background: linear-gradient(135deg, rgba(59, 31, 74, .2), transparent);
+            border: 1px solid rgba(201, 168, 76, .3);
+        }
+        .final-message p {
+            font-family: 'Pinyon Script', cursive;
+            font-size: clamp(22px, 4vw, 34px);
+            color: var(--gold3);
+            line-height: 1.8;
+            text-shadow: 0 0 30px rgba(201, 168, 76, .3);
+            min-height: 60px;
+        }
+
+        .cursor-spark {
             position: fixed;
-            bottom: 2vh;
-            left: 2vw;
-            background: rgba(20, 20, 40, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2vmin;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: rgba(201, 168, 76, .7);
+            pointer-events: none;
+            z-index: 997;
+            transform: translate(-50%, -50%);
+        }
+
+        .petal-burst {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .burst-petal {
+            position: absolute;
+            border-radius: 50% 50% 50% 0;
+            transform-origin: bottom left;
+            animation: burstFly var(--dur) ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes burstFly {
+            0% {
+                opacity: 1;
+                transform: rotate(var(--ang)) translateY(0) scale(1);
+            }
+            60% {
+                opacity: .9;
+            }
+            100% {
+                opacity: 0;
+                transform: rotate(calc(var(--ang) + 120deg)) translateY(var(--dist)) scale(.3);
+            }
+        }
+
+        .ornament {
+            text-align: center;
+            color: var(--gold);
+            font-size: 20px;
+            opacity: .5;
+            margin: 48px 0;
+            letter-spacing: 12px;
+        }
+
+        .panel-side {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 24px;
+            border-top: 1px solid rgba(201, 168, 76, .1);
+            position: relative;
+            z-index: 2;
+        }
+        footer p {
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: var(--gold);
+            opacity: .4;
+            text-transform: uppercase;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 998;
+            opacity: .35;
+        }
+
+        #weather-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 1.8s ease;
+        }
+        #weather-canvas.wx-visible {
+            opacity: 1;
+        }
+
+        .wx-night #petal-canvas {
+            opacity: 0.4;
+        }
+        .wx-night body {
+            background: #04030a;
+        }
+        .wx-night .hero-bg {
+            background: radial-gradient(ellipse at 50% 35%, #160d2a 0%, #06040f 55%, #02010a 100%) !important;
+        }
+
+        #wx-fog {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 3;
+            opacity: 0;
+            transition: opacity 3s ease;
+            background:
+                radial-gradient(ellipse 120% 30% at 50% 100%, rgba(92, 60, 130, 0.18) 0%, transparent 70%),
+                radial-gradient(ellipse 80% 20% at 20% 95%, rgba(60, 30, 80, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 90% 25% at 80% 98%, rgba(80, 50, 110, 0.14) 0%, transparent 65%);
+            animation: fogDrift 18s ease-in-out infinite alternate;
+        }
+        #wx-fog.wx-visible {
+            opacity: 1;
+        }
+        @keyframes fogDrift {
+            0% {
+                transform: translateX(-12px) scaleX(1);
+            }
+            50% {
+                transform: translateX(8px) scaleX(1.03);
+            }
+            100% {
+                transform: translateX(-6px) scaleX(0.97);
+            }
+        }
+
+        #wx-rain-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+        #wx-rain-canvas.wx-visible {
+            opacity: 1;
+        }
+
+        .wx-winter #petal-canvas {
+            opacity: 1;
+        }
+
+        #wx-badge {
+            position: fixed;
+            bottom: 32px;
+            left: 24px;
+            z-index: 9999;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: rgba(201, 168, 76, 0.45);
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity 1s ease;
+            user-select: none;
             display: flex;
             align-items: center;
-            gap: 2vmin;
-            z-index: 50;
-            border: 1px solid rgba(255, 192, 203, 0.3);
-            color: white;
-            max-width: 180px;
+            gap: 7px;
+        }
+        #wx-badge.wx-visible {
+            opacity: 1;
+        }
+        #wx-badge-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--gold);
+            opacity: 0.5;
+            animation: wxDotPulse 3s ease infinite;
+        }
+        @keyframes wxDotPulse {
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.4);
+            }
         }
 
-        .play-btn {
-            width: 9vmin;
-            height: 9vmin;
-            max-width: 40px;
-            max-height: 40px;
-            border-radius: 50%;
-            background: #ff69b4;
-            border: none;
-            color: white;
-            font-size: 18px;
+        @media(max-width:600px) {
+            .panel-side {
+                grid-template-columns: 1fr;
+            }
+            .bubble-wrap {
+                display: none;
+            }
+            .lock-box {
+                padding: 40px 20px;
+            }
+            #password-input {
+                width: 130px;
+                font-size: 18px;
+            }
+            .final-message {
+                padding: 32px 20px;
+            }
+            .chapter-divider {
+                margin: 50px auto 30px;
+            }
+            .panel {
+                margin-bottom: 80px;
+            }
+        }
+
+        #lang-switcher {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .lang-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: rgba(201, 168, 76, 0.55);
+            text-transform: uppercase;
+            user-select: none;
+            transition: color .3s;
+        }
+        .lang-label.active {
+            color: var(--gold);
+        }
+
+        .lang-toggle-track {
+            position: relative;
+            width: 52px;
+            height: 26px;
+            border: 1px solid rgba(201, 168, 76, 0.35);
+            border-radius: 13px;
+            background: rgba(10, 8, 13, 0.85);
+            backdrop-filter: blur(10px);
             cursor: pointer;
+            transition: border-color .4s, box-shadow .4s;
+            box-shadow: 0 0 16px rgba(201, 168, 76, 0.08);
+        }
+        .lang-toggle-track:hover {
+            border-color: rgba(201, 168, 76, 0.65);
+            box-shadow: 0 0 20px rgba(201, 168, 76, 0.2);
+        }
+        .lang-toggle-thumb {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--gold);
+            box-shadow: 0 0 10px rgba(201, 168, 76, 0.5);
+            transition: transform .4s cubic-bezier(.68, -.55, .27, 1.55);
+        }
+        .lang-toggle-track.fa-active .lang-toggle-thumb {
+            transform: translateX(26px);
+        }
+        .lang-toggle-track.fa-active {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
+        }
+
+        #mood-selector {
+            position: fixed;
+            bottom: 32px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .mood-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: rgba(201, 168, 76, 0.4);
+            text-transform: uppercase;
+            user-select: none;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            margin-bottom: 4px;
+        }
+        .mood-dots {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+        .mood-dot {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1.5px solid transparent;
+            transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+            position: relative;
+        }
+        .mood-dot::after {
+            content: attr(data-label);
+            position: absolute;
+            right: calc(100% + 10px);
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--gold);
+            opacity: 0;
+            white-space: nowrap;
+            pointer-events: none;
+            transition: opacity .25s ease;
+            text-transform: uppercase;
+        }
+        .mood-dot:hover::after {
+            opacity: 1;
+        }
+        .mood-dot:hover {
+            transform: scale(1.35);
+        }
+        .mood-dot.active {
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(201, 168, 76, 0.5);
+            transform: scale(1.2);
+        }
+        .mood-dot[data-mood="midnight"] {
+            background: #3b1f4a;
+        }
+        .mood-dot[data-mood="rose"] {
+            background: #7a2040;
+        }
+        .mood-dot[data-mood="ivory"] {
+            background: #c8b89a;
+        }
+
+        body.mood-rose {
+            --black: #150810;
+            --deep: #1e0a14;
+            --mauve: #5a1530;
+            --mauve2: #8b2550;
+            --gold: #c47c8a;
+            --gold2: #e8aab8;
+            --gold3: #f5d8de;
+            --cream: #fff0f3;
+            --text: #d4a0a8;
+        }
+        body.mood-rose .hero-bg {
+            background: radial-gradient(ellipse at 50% 40%, #4a0a25 0%, #1e0a14 50%, #150810 100%);
+        }
+        body.mood-rose #preloader {
+            background: #150810;
+        }
+
+        body.mood-ivory {
+            --black: #f0ebe0;
+            --deep: #e8e0d0;
+            --mauve: #c8b89a;
+            --mauve2: #8b6a4a;
+            --gold: #8b6a2a;
+            --gold2: #6b4a1a;
+            --gold3: #3a2a0a;
+            --cream: #2a1a0a;
+            --text: #4a3a2a;
+        }
+        body.mood-ivory {
+            background: var(--black);
+            color: var(--text);
+        }
+        body.mood-ivory .hero-bg {
+            background: radial-gradient(ellipse at 50% 40%, #d8c8a8 0%, #e8e0d0 50%, #f0ebe0 100%);
+        }
+        body.mood-ivory .bubble {
+            background: #2a1a0a;
+            color: #f0ebe0;
+        }
+        body.mood-ivory .bubble::after {
+            border-color: #2a1a0a transparent transparent transparent;
+        }
+        body.mood-ivory #preloader {
+            background: #f0ebe0;
+        }
+        body.mood-ivory .loader-content {
+            color: #8b6a2a;
+        }
+        body.mood-ivory body::after {
+            opacity: .15;
+        }
+
+        #withered-flower-section {
+            max-width: 860px;
+            margin: 0 auto 120px;
+            padding: 0 24px;
+        }
+
+        .wf-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .wf-img-wrapper {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(201, 168, 76, .2);
+            box-shadow: 0 0 80px rgba(59, 31, 74, .5), inset 0 0 30px rgba(0, 0, 0, .5);
+            opacity: 0;
+        }
+        .wf-img-wrapper::before,
+        .wf-img-wrapper::after {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-color: var(--gold);
+            border-style: solid;
+            z-index: 3;
+            pointer-events: none;
+        }
+        .wf-img-wrapper::before {
+            top: 8px;
+            left: 8px;
+            border-width: 1px 0 0 1px;
+        }
+        .wf-img-wrapper::after {
+            bottom: 8px;
+            right: 8px;
+            border-width: 0 1px 1px 0;
+        }
+
+        .wf-img-wrapper img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            filter: sepia(35%) contrast(1.04) brightness(.90);
+            transition: filter 1.2s ease;
+        }
+        .wf-img-wrapper:hover img {
+            filter: sepia(15%) contrast(1.07) brightness(.96);
+        }
+
+        .wf-text-block {
+            opacity: 0;
+        }
+
+        .wf-text-block p {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: clamp(17px, 2.2vw, 22px);
+            line-height: 2;
+            color: var(--text);
+            text-align: center;
+            position: relative;
+            padding: 32px 24px;
+            border: 1px solid rgba(201, 168, 76, .15);
+            background: linear-gradient(135deg, rgba(59, 31, 74, .12), transparent);
+        }
+
+        .wf-text-block p::before {
+            content: '\201C';
+            position: absolute;
+            top: 6px;
+            left: 14px;
+            font-size: 72px;
+            color: var(--gold);
+            opacity: .18;
+            font-family: serif;
+            line-height: 1;
+        }
+
+        .wf-text-block .wf-highlight {
+            color: var(--gold2);
+            font-style: normal;
+        }
+
+        @media (max-width: 640px) {
+            .wf-container {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+            #withered-flower-section {
+                margin-bottom: 80px;
+            }
+        }
+
+        #envelope-stage {
+            display: none;
+            max-width: 460px;
+            margin: 0 auto;
+            perspective: 900px;
+            position: relative;
+        }
+        #envelope-stage.visible {
+            display: block;
+        }
+
+        .envelope {
+            width: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .env-body {
+            width: 100%;
+            padding-top: 62%;
+            background: linear-gradient(160deg, #1a0f2e 0%, #0e0918 100%);
+            border: 1px solid rgba(201, 168, 76, 0.5);
+            border-radius: 2px 2px 6px 6px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.7), 0 0 40px rgba(201, 168, 76, 0.08);
+        }
+
+        .env-body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg, transparent 49%, rgba(201, 168, 76, 0.07) 49%, rgba(201, 168, 76, 0.07) 51%, transparent 51%),
+                linear-gradient(225deg, transparent 49%, rgba(201, 168, 76, 0.05) 49%, rgba(201, 168, 76, 0.05) 51%, transparent 51%);
+            pointer-events: none;
+        }
+
+        .env-seal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #e8d08a, #c9a84c 40%, #9a7a30 100%);
+            border: 1px solid rgba(201, 168, 76, 0.8);
+            box-shadow: 0 0 20px rgba(201, 168, 76, 0.4), inset 0 0 10px rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 22px;
+            z-index: 4;
+            transition: opacity .4s ease;
         }
 
-        .song-title {
-            font-size: 0.8rem;
-        }
-
-        .equalizer {
-            display: flex;
-            gap: 0.2vmin;
-            height: 4vmin;
-            align-items: flex-end;
-        }
-
-        .bar {
-            width: 0.6vmin;
-            background: #ffb6c1;
-            height: 1vmin;
-            border-radius: 2px;
-        }
-
-        .player.playing .bar {
-            animation: equalize 0.9s infinite alternate;
-        }
-        .player.playing .bar:nth-child(1) { animation-delay: 0s; }
-        .player.playing .bar:nth-child(2) { animation-delay: 0.1s; }
-        .player.playing .bar:nth-child(3) { animation-delay: 0.2s; }
-        .player.playing .bar:nth-child(4) { animation-delay: 0.3s; }
-        .player.playing .bar:nth-child(5) { animation-delay: 0.4s; }
-        .player.playing .bar:nth-child(6) { animation-delay: 0.5s; }
-        .player.playing .bar:nth-child(7) { animation-delay: 0.6s; }
-        .player.playing .bar:nth-child(8) { animation-delay: 0.7s; }
-
-        @keyframes equalize {
-            0% { height: 1vmin; }
-            100% { height: 4vmin; }
-        }
-
-        .progress-bar {
+        .env-flap {
             width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: top center;
+            transform-style: preserve-3d;
+            z-index: 5;
+            clip-path: polygon(0 0, 100% 0, 50% 68%);
+            background: linear-gradient(180deg, #221240 0%, #160c2c 100%);
+            border-left: 1px solid rgba(201, 168, 76, 0.5);
+            border-right: 1px solid rgba(201, 168, 76, 0.5);
+            border-top: 1px solid rgba(201, 168, 76, 0.5);
+        }
+        .env-flap {
+            padding-top: 42%;
+        }
+
+        .env-letter {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            width: 82%;
+            background: linear-gradient(160deg, #fdf6e3 0%, #f5ead0 100%);
+            border: 1px solid rgba(201, 168, 76, 0.4);
             border-radius: 2px;
-            margin-top: 1vmin;
-        }
-
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: #ff69b4;
-            border-radius: 2px;
-        }
-
-        .wish-container {
-            position: fixed;
-            bottom: 2vh;
-            right: 2vw;
-            display: flex;
-            gap: 2vmin;
-            z-index: 50;
-            align-items: center;
-        }
-
-        .wish-input {
-            padding: 2vmin;
-            border-radius: 25px;
-            border: 1px solid rgba(255, 215, 0, 0.5);
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            outline: none;
-            width: 35vw;
-            max-width: 180px;
-            font-size: 0.9rem;
-        }
-
-        .wish-btn {
-            background: linear-gradient(45deg, #ffb6c1, #ff69b4);
-            border: none;
-            border-radius: 25px;
-            padding: 2vmin 3vmin;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .heart {
-            position: fixed;
-            width: 6vmin;
-            height: 6vmin;
-            max-width: 24px;
-            max-height: 24px;
-            background: #ff4d6d;
-            transform: rotate(-45deg);
-            animation: floatUp 4s ease-in forwards;
-            z-index: 15;
+            padding: 28px 24px 22px;
+            text-align: center;
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.5);
+            z-index: 3;
+            opacity: 0;
             pointer-events: none;
-            opacity: 0.9;
+        }
+        .env-letter .letter-ornament {
+            font-size: 18px;
+            color: var(--mauve2);
+            letter-spacing: 8px;
+            margin-bottom: 10px;
+            display: block;
+            opacity: .7;
+        }
+        .env-letter .letter-text {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            font-size: clamp(15px, 2.4vw, 19px);
+            color: #1a0d05;
+            line-height: 2;
+            letter-spacing: 0.3px;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
         }
 
-        .heart::before, .heart::after {
+        #envelope-stage .envelope-wrapper {
+            transform-style: preserve-3d;
+        }
+
+        /* ══════════════════════════════
+           THE ETERNAL GALLERY STYLES
+           ══════════════════════════════ */
+        #eternal-gallery {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto 120px;
+            padding: 0 24px;
+        }
+
+        .gallery-inner {
+            border: 1px solid rgba(201, 168, 76, 0.2);
+            background: linear-gradient(180deg,
+                    rgba(17, 13, 26, 0.95) 0%,
+                    rgba(10, 8, 13, 0.98) 100%);
+            box-shadow: 0 0 100px rgba(59, 31, 74, 0.3),
+                inset 0 0 60px rgba(0, 0, 0, 0.4);
+            padding: 48px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-inner::before {
             content: '';
             position: absolute;
-            background: #ff4d6d;
-            border-radius: 50%;
+            inset: 0;
+            background: repeating-linear-gradient(45deg,
+                    transparent,
+                    transparent 30px,
+                    rgba(201, 168, 76, 0.015) 30px,
+                    rgba(201, 168, 76, 0.015) 31px);
+            pointer-events: none;
+        }
+
+        .gallery-title {
+            font-family: 'Pinyon Script', cursive;
+            font-size: clamp(40px, 7vw, 64px);
+            color: var(--gold2);
+            text-align: center;
+            text-shadow: 0 0 40px rgba(201, 168, 76, 0.35);
+            position: relative;
+            z-index: 1;
+            margin-bottom: 6px;
+        }
+
+        .gallery-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: clamp(14px, 2vw, 17px);
+            color: var(--text);
+            text-align: center;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 40px;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            z-index: 1;
+            background: #fdf6e3;
+            border: 1px solid rgba(201, 168, 76, 0.4);
+            box-shadow: 0 0 40px rgba(201, 168, 76, 0.1),
+                inset 0 0 20px rgba(0, 0, 0, 0.15);
+            border-radius: 2px;
+            overflow: hidden;
+            max-width: 500px;
+            margin: 0 auto 20px;
+            line-height: 0;
+        }
+
+        #drawing-canvas {
+            display: block;
             width: 100%;
-            height: 100%;
+            height: auto;
+            aspect-ratio: 5/3;
+            cursor: crosshair;
+            touch-action: none;
         }
 
-        .heart::before { top: -50%; left: 0; }
-        .heart::after  { left: 50%; top: 0; }
-
-        @keyframes floatUp {
-            0% { transform: translateY(0) rotate(-45deg) scale(0.5); opacity: 1; }
-            100% { transform: translateY(-110vh) rotate(-45deg) scale(1.2); opacity: 0; }
+        .drawing-tools {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 12px;
+            background: rgba(10, 8, 13, 0.6);
+            border: 1px solid rgba(201, 168, 76, 0.15);
+            border-radius: 2px;
+            max-width: 500px;
+            margin: 0 auto 32px;
         }
 
-        @keyframes wishFloat {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-30vh) scale(1.3); }
+        .tool-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tool-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(201, 168, 76, 0.5);
+            background: rgba(10, 8, 13, 0.8);
+            color: var(--gold);
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+        .tool-btn:hover {
+            background: rgba(201, 168, 76, 0.2);
+            border-color: var(--gold);
+            box-shadow: 0 0 14px rgba(201, 168, 76, 0.3);
+            transform: scale(1.08);
+        }
+        .tool-btn.active {
+            background: var(--gold);
+            color: var(--black);
+            border-color: var(--gold);
+            box-shadow: 0 0 18px rgba(201, 168, 76, 0.5);
+        }
+
+        .color-swatch {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        .color-swatch:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 12px currentColor;
+        }
+        .color-swatch.active {
+            border-color: #fff;
+            box-shadow: 0 0 16px currentColor;
+            transform: scale(1.15);
+        }
+
+        .brush-slider {
+            -webkit-appearance: none;
+            width: 80px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(201, 168, 76, 0.3);
+            outline: none;
+            cursor: pointer;
+        }
+        .brush-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--gold);
+            cursor: pointer;
+            border: 2px solid rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 10px rgba(201, 168, 76, 0.5);
+        }
+        .brush-size-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 11px;
+            color: var(--gold);
+            letter-spacing: 1px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .name-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(201, 168, 76, 0.4);
+            padding: 8px 14px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 14px;
+            color: var(--gold2);
+            text-align: center;
+            letter-spacing: 2px;
+            width: 120px;
+            outline: none;
+            border-radius: 2px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .name-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 16px rgba(201, 168, 76, 0.2);
+        }
+        .name-input::placeholder {
+            color: rgba(201, 168, 76, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: 1px solid var(--gold);
+            background: transparent;
+            color: var(--gold);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border-radius: 2px;
+            white-space: nowrap;
+        }
+        .action-btn:hover {
+            background: var(--gold);
+            color: var(--black);
+            box-shadow: 0 0 24px rgba(201, 168, 76, 0.35);
+        }
+        .action-btn.save-btn {
+            background: rgba(201, 168, 76, 0.1);
+            border-color: var(--gold2);
+            color: var(--gold2);
+        }
+        .action-btn.save-btn:hover {
+            background: var(--gold2);
+            color: var(--black);
+        }
+        .action-btn:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .gallery-grid {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .gallery-item {
+            border: 1px solid rgba(201, 168, 76, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            background: rgba(10, 8, 13, 0.7);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(24px);
+        }
+        .gallery-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .gallery-item:hover {
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(201, 168, 76, 0.25);
+            transform: translateY(-4px) scale(1.03);
+        }
+        .gallery-item-img {
+            width: 100%;
+            aspect-ratio: 5/3;
+            object-fit: cover;
+            display: block;
+            background: #fdf6e3;
+        }
+        .gallery-item-name {
+            padding: 10px 8px;
+            text-align: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--gold);
+            text-transform: uppercase;
+            border-top: 1px solid rgba(201, 168, 76, 0.15);
+        }
+
+        .gallery-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 48px 20px;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 15px;
+            color: var(--text);
+            opacity: 0.5;
+            letter-spacing: 2px;
+        }
+
+        .gallery-loading {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--gold);
+            letter-spacing: 2px;
+            animation: pulse 1.8s infinite;
+        }
+
+        /* Toast */
+        .gallery-toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            z-index: 10000;
+            background: rgba(10, 8, 13, 0.95);
+            border: 1px solid var(--gold);
+            padding: 16px 28px;
+            border-radius: 2px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 14px;
+            color: var(--gold2);
+            letter-spacing: 2px;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(201, 168, 76, 0.3);
+            backdrop-filter: blur(12px);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .gallery-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            .drawing-tools {
+                gap: 8px;
+                padding: 12px 8px;
+            }
+            .gallery-inner {
+                padding: 32px 16px;
+            }
+        }
+        @media (max-width: 500px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            .drawing-tools {
+                gap: 5px;
+            }
+            .tool-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 13px;
+            }
+            .color-swatch {
+                width: 22px;
+                height: 22px;
+            }
+            .name-input {
+                width: 90px;
+                font-size: 12px;
+            }
+            .action-btn {
+                padding: 8px 14px;
+                font-size: 10px;
+                letter-spacing: 2px;
+            }
+            .brush-slider {
+                width: 50px;
+            }
         }
     </style>
 </head>
 <body>
-    <canvas id="starCanvas"></canvas>
-    <button class="lang-btn" id="langToggle" data-lang="langBtn">فارسی</button>
+    <div id="preloader">
+        <div class="loader-content">
+            <div class="flower-icon">⚜️</div>
+            <p id="loader-text" data-en="Preparing your special chapter..." data-fa="در حال آماده کردن فصل خاص شما...">Preparing your special chapter...</p>
+        </div>
+    </div>
 
-    <div class="overlay">
-        <h1 class="title" data-lang="title">✨ To My Dearest Love ✨</h1>
+    <canvas id="petal-canvas"></canvas>
+    <canvas id="weather-canvas"></canvas>
+    <canvas id="wx-rain-canvas"></canvas>
+    <div id="wx-fog"></div>
+    <div id="wx-badge"><div id="wx-badge-dot"></div><span id="wx-badge-label"></span></div>
 
-        <div class="counter-container">
-            <div data-lang="daysTogether">We've been together for</div>
-            <div class="counter-digits" id="counterDigits">
-                <span id="daysVal">0</span> : <span id="hoursVal">0</span> : <span id="minsVal">0</span> : <span id="secsVal">0</span>
+    <button id="audio-btn" title="Toggle music" aria-label="Toggle music">♪</button>
+
+    <div id="lang-switcher" aria-label="Language switcher">
+        <span class="lang-label" id="lbl-en">EN</span>
+        <div class="lang-toggle-track" id="lang-toggle" role="switch" aria-checked="false" tabindex="0" title="Switch language">
+            <div class="lang-toggle-thumb"></div>
+        </div>
+        <span class="lang-label" id="lbl-fa">FA</span>
+    </div>
+
+    <div id="mood-selector" aria-label="Mood selector">
+        <span class="mood-label">Mood</span>
+        <div class="mood-dots">
+            <div class="mood-dot active" data-mood="midnight" data-label="Midnight" title="Midnight"></div>
+            <div class="mood-dot" data-mood="rose" data-label="Rose" title="Rose"></div>
+            <div class="mood-dot" data-mood="ivory" data-label="Ivory" title="Ivory"></div>
+        </div>
+    </div>
+
+    <section id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-tag" id="h-tag" data-en="— A Gift Written in Petals —" data-fa="— هدیه‌ای نوشته در گلبرگ‌ها —">— A Gift Written in Petals —</div>
+        <div class="hero-line" id="h-line1"></div>
+        <h1 class="hero-title" id="h-title" data-en="For My Flower" data-fa="برای گُلِ من">For My Flower</h1>
+        <div class="hero-line" id="h-line2"></div>
+        <p class="hero-sub" id="h-sub" data-en="Even withered flowers hold beauty.<br>This one was made for you." data-fa="حتی گل‌های پژمرده هم زیبایی دارند.<br>این یکی برای تو ساخته شده.">
+            Even withered flowers hold beauty.<br>
+            This one was made for you.
+        </p>
+        <div class="hero-scroll-hint" id="h-scroll">
+            <span data-en="Scroll" data-fa="پایین بروید">Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <main>
+        <div class="chapter-divider cd-1"><span data-en="Chapter I — First Bloom" data-fa="فصل اول — اولین شکوفه">Chapter I — First Bloom</span></div>
+        <div class="panel panel-full p1">
+            <div class="img-wrapper iw1" style="max-height:620px;">
+                <img src="https://i.postimg.cc/ZYySc8cR/0b928bb8cbb832f28885c8d44476d970.jpg" loading="lazy" alt="First Bloom">
             </div>
-            <div>
-                <span data-lang="days">days</span> : <span data-lang="hours">hours</span> : <span data-lang="minutes">minutes</span> : <span data-lang="seconds">seconds</span>
+            <div class="bubble-wrap bw1" style="top:12%;right:-10px;">
+                <div class="bubble right">
+                    <div class="bubble-name" data-en="Her" data-fa="او">Her</div>
+                    <span data-en="I keep looking for you in every quiet morning." data-fa="در هر صبح آرام دنبالت می‌گردم.">I keep looking for you in every quiet morning.</span>
+                </div>
+            </div>
+            <div class="panel-caption pc1">
+                <p data-en='There was something about the way the <span class="gold-word">light</span> fell—<br>as if it knew exactly where to find you.'
+                    data-fa='چیزی در نحوه تابش <span class="gold-word">نور</span> بود—<br>انگار که می‌دانست دقیقاً کجا تو را پیدا کند.'>There was something about the way the <span class="gold-word">light</span> fell—<br>
+                    as if it knew exactly where to find you.</p>
             </div>
         </div>
-
-        <div class="constellation-info">
-            <div data-lang="hint">Find the 20 hidden stars to reveal a special message</div>
-            <div class="constellation-progress" id="constProgress">Stars found: 0/20</div>
+        <div class="ornament">✦ ✦ ✦</div>
+        <blockquote class="quote-block qb1">
+            <p data-en="In every story where two people find each other, there is always a moment—<br>small and unremarkable to the world—<br>that changed everything."
+                data-fa="در هر داستانی که دو نفر یکدیگر را پیدا می‌کنند، همیشه لحظه‌ای هست—<br>کوچک و ناچیز برای دنیا—<br>که همه چیز را تغییر داد.">In every story where two people find each other, there is always a moment—<br>
+                small and unremarkable to the world—<br>
+                that changed everything.</p>
+            <cite data-en="— Page 14" data-fa="— صفحه ۱۴">— Page 14</cite>
+        </blockquote>
+        <div class="chapter-divider cd-2"><span data-en="Chapter II — Falling Pages" data-fa="فصل دوم — صفحات در حال سقوط">Chapter II — Falling Pages</span></div>
+        <div class="panel panel-side p2">
+            <div style="position:relative;">
+                <div class="img-wrapper iw2">
+                    <img src="https://i.postimg.cc/v8nJ9QYk/73ee85dd4c728ae5900547406cf77dba.jpg" loading="lazy" alt="Falling Pages">
+                </div>
+                <div class="bubble-wrap bw2" style="bottom:14%;left:-8px;">
+                    <div class="bubble">
+                        <div class="bubble-name" data-en="Him" data-fa="او">Him</div>
+                        <span data-en="Stay a little longer. The story isn't over yet." data-fa="کمی بیشتر بمان. داستان هنوز تمام نشده.">Stay a little longer. The story isn't over yet.</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding-top:40px;">
+                <div class="panel-caption pc2" style="text-align:left;margin-top:0;">
+                    <p style="text-align:left;" data-en='Every chapter you have lived through—<br>even the <span class="gold-word">heavy</span> ones—<br>I would read them all.<br><br>Because they led you here.'
+                        data-fa='هر فصلی که از سرگذرانده‌ای—<br>حتی <span class="gold-word">سنگین‌ترین</span>‌هایشان—<br>همه را می‌خواندم.<br><br>چون به اینجا رسیدی.'>Every chapter you have lived through—<br>
+                        even the <span class="gold-word">heavy</span> ones—<br>
+                        I would read them all.<br><br>
+                        Because they led you here.</p>
+                </div>
+            </div>
         </div>
-
-        <div class="revealed-message" id="revealedMsg" data-lang="messageRevealed">🌌 I Love You More Than All The Stars 🌌</div>
-
-        <div class="envelope-wrapper">
-            <div class="envelope" id="envelope">
-                <div class="envelope-flap"></div>
-                <div class="envelope-body"></div>
-                <div class="letter-container" id="letterContainer">
-                    <div class="letter-inner" id="letterInner">
-                        <div class="letter-front">
-                            <p class="greeting" data-lang="letterGreeting">My Love,</p>
-                            <p data-lang="letterBody">From the moment our stars aligned, my universe has been filled with your light. Every heartbeat whispers your name.</p>
-                            <p data-lang="letterClosing">Forever yours,</p>
-                            <button class="flip-btn" id="flipToBack">📜 Read more</button>
-                        </div>
-                        <div class="letter-back">
-                            <p class="quote-label" data-lang="quoteLabel">A special quote:</p>
-                            <p data-lang="quoteText">"You are the finest, loveliest, tenderest, and most beautiful person I have ever known—and even that is an understatement."</p>
-                            <button class="flip-btn" id="flipToFront">↩ Back</button>
+        <div class="ornament">✦ ✦ ✦</div>
+        <div class="chapter-divider cd-3"><span data-en="Chapter III — The Drama of Us" data-fa="فصل سوم — درام ما">Chapter III — The Drama of Us</span></div>
+        <div class="panel panel-full p3">
+            <div class="img-wrapper iw3" style="max-height:680px;">
+                <img src="https://i.postimg.cc/Px4npHnY/04f8c3938e89c4b21187c176d6498e04.jpg" loading="lazy" alt="Drama">
+            </div>
+            <div class="bubble-wrap bw3" style="top:8%;left:-6px;">
+                <div class="bubble">
+                    <div class="bubble-name" data-en="Her" data-fa="او">Her</div>
+                    <span data-en="Why does it feel like I've known you from before this life?" data-fa="چرا حس می‌کنم تو را از قبل از این زندگی می‌شناختم؟">Why does it feel like I've known you from before this life?</span>
+                </div>
+            </div>
+            <div class="bubble-wrap bw3b" style="bottom:18%;right:-6px;">
+                <div class="bubble right">
+                    <div class="bubble-name" data-en="Him" data-fa="او">Him</div>
+                    <span data-en="Maybe the petals always knew which way the wind would carry them." data-fa="شاید گلبرگ‌ها همیشه می‌دانستند باد آن‌ها را به کجا می‌برد.">Maybe the petals always knew which way the wind would carry them.</span>
+                </div>
+            </div>
+            <div class="panel-caption pc3">
+                <p data-en='Some feelings arrive not like storms—<br>but like the <span class="gold-word">last page</span> of a book you weren't ready to finish.'
+                    data-fa='بعضی احساسات مثل طوفان نمی‌رسند—<br>بلکه مثل <span class="gold-word">آخرین صفحه</span> کتابی که آماده تمامش نبودی.'>Some feelings arrive not like storms—<br>
+                    but like the <span class="gold-word">last page</span> of a book you weren't ready to finish.</p>
+            </div>
+        </div>
+        <div class="ornament">✦ ✦ ✦</div>
+        <blockquote class="quote-block qb2">
+            <p data-en="The withered flower does not mourn its petals.<br>It simply becomes the most honest thing in the garden."
+                data-fa="گل پژمرده برای گلبرگ‌هایش عزاداری نمی‌کند.<br>فقط صادقانه‌ترین چیز باغ می‌شود.">The withered flower does not mourn its petals.<br>
+                It simply becomes the most honest thing in the garden.</p>
+            <cite data-en="— Tears on a Withered Flower, Vol. 3" data-fa="— اشک بر گل پژمرده، جلد ۳">— Tears on a Withered Flower, Vol. 3</cite>
+        </blockquote>
+        <div class="chapter-divider cd-wf"><span data-en="Chapter — Withered Flower" data-fa="فصل — گل پژمرده">Chapter — Withered Flower</span></div>
+        <section id="withered-flower-section">
+            <div class="wf-container">
+                <div class="wf-img-wrapper">
+                    <img src="https://i.postimg.cc/jjGF3RBB/fdafb26af381f5c096463a954a050282.jpg" loading="lazy" alt="Withered Flower">
+                </div>
+                <div class="wf-text-block">
+                    <p data-en='In a world where everything seems to <span class="wf-highlight">wither away</span>,<br>you remain the only place where I truly <span class="wf-highlight">bloom</span>.'
+                        data-fa='در دنیایی که همه چیز <span class="wf-highlight">پژمرده</span> می‌شود،<br>تو تنها جایی هستی که من واقعاً <span class="wf-highlight">شکوفا</span> می‌شوم.'>In a world where everything seems to <span class="wf-highlight">wither away</span>,<br>you remain the only place where I truly <span class="wf-highlight">bloom</span>.</p>
+                </div>
+            </div>
+        </section>
+        <div class="ornament">✦ ✦ ✦</div>
+        <div class="chapter-divider cd-4"><span data-en="The Final Chapter — Locked" data-fa="فصل پایانی — قفل شده">The Final Chapter — Locked</span></div>
+        <div id="secret-section">
+            <div class="lock-box">
+                <span class="lock-icon">🔒</span>
+                <div class="lock-title" data-en="A Secret Page" data-fa="یک صفحه پنهان">A Secret Page</div>
+                <div class="lock-hint" data-en="Enter the number to unlock the final chapter" data-fa="عدد را وارد کنید تا فصل پایانی باز شود">Enter the number to unlock the final chapter</div>
+                <input type="number" id="password-input" placeholder="· · ·" maxlength="6" inputmode="numeric" autocomplete="off">
+                <button id="unlock-btn" data-en="Open" data-fa="باز کن">Open</button>
+                <div id="pw-error" data-en="That is not the right memory." data-fa="این خاطره درست نیست.">That is not the right memory.</div>
+            </div>
+            <div id="envelope-stage">
+                <div class="envelope-wrapper">
+                    <div class="envelope" id="the-envelope">
+                        <div class="env-flap" id="env-flap"></div>
+                        <div class="env-body" id="env-body">
+                            <div class="env-seal" id="env-seal">✦</div>
+                            <div class="env-letter" id="env-letter">
+                                <span class="letter-ornament">✦ ✦ ✦</span>
+                                <p class="letter-text" data-en="Turn the page,<br>your story awaits…" data-fa="صفحه را برگردان،<br>داستانت منتظر است…">Turn the page,<br>your story awaits…</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="player" id="player">
-        <button class="play-btn" id="playBtn">▶</button>
-        <div>
-            <div class="song-title" data-lang="songTitle">Endless Love</div>
-            <div class="equalizer" id="equalizer">
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div id="secret-reveal">
+            <div class="chapter-divider" style="opacity:1;margin-bottom:60px;">
+                <span data-en="Chapter IV — The Final Bloom" data-fa="فصل چهارم — آخرین شکوفه">Chapter IV — The Final Bloom</span>
             </div>
-            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="reveal-img-wrapper">
+                <img src="https://i.postimg.cc/rpvhFrrT/589d37f66462530281dcb9018a23e287.jpg" loading="lazy" alt="Final Bloom">
+            </div>
+            <div class="final-message">
+                <p id="final-text"></p>
+            </div>
         </div>
-    </div>
+    </main>
 
-    <div class="wish-container">
-        <input type="text" class="wish-input" id="wishInput" data-lang-placeholder="wishPlaceholder" placeholder="Type your wish...">
-        <button class="wish-btn" id="wishBtn" data-lang="wishButton">Send to the stars</button>
-    </div>
+    <!-- ══════════════════════════════
+         THE ETERNAL GALLERY SECTION
+         ══════════════════════════════ -->
+    <section id="eternal-gallery">
+        <div class="chapter-divider" style="opacity:1;margin-bottom:10px;">
+            <span data-en="The Eternal Gallery" data-fa="گالری ابدی">The Eternal Gallery</span>
+        </div>
+        <div class="gallery-inner">
+            <h2 class="gallery-title" data-en="Your Marks" data-fa="نشان‌های تو">Your Marks</h2>
+            <p class="gallery-subtitle" data-en="Leave a trace of your heart upon this sanctuary…" data-fa="نشانی از قلبت بر این محراب بگذار…">Leave a trace of your heart upon this sanctuary…</p>
+
+            <!-- Canvas -->
+            <div class="canvas-wrapper">
+                <canvas id="drawing-canvas" width="500" height="300"></canvas>
+            </div>
+
+            <!-- Tools -->
+            <div class="drawing-tools" id="drawing-tools">
+                <div class="tool-group">
+                    <button class="tool-btn active" id="tool-pen" title="Pen" aria-label="Pen">✎</button>
+                    <button class="tool-btn" id="tool-eraser" title="Eraser" aria-label="Eraser">⌫</button>
+                </div>
+                <div class="tool-group" id="color-swatches">
+                    <span class="color-swatch active" data-color="#D4AF37" style="background:#D4AF37;" title="Gold"></span>
+                    <span class="color-swatch" data-color="#FFC0CB" style="background:#FFC0CB;" title="Pink"></span>
+                    <span class="color-swatch" data-color="#FFFFFF" style="background:#FFFFFF;" title="White"></span>
+                    <span class="color-swatch" data-color="#8B4A6E" style="background:#8B4A6E;" title="Mauve"></span>
+                    <span class="color-swatch" data-color="#E8D08A" style="background:#E8D08A;" title="Light Gold"></span>
+                </div>
+                <div class="tool-group">
+                    <input type="range" id="brush-slider" class="brush-slider" min="1" max="10" value="3" title="Brush Size">
+                    <span class="brush-size-label" id="brush-size-label">3</span>
+                </div>
+                <div class="tool-group">
+                    <input type="text" id="artist-name" class="name-input" placeholder="Your name" maxlength="30" autocomplete="off">
+                </div>
+                <div class="tool-group">
+                    <button class="action-btn save-btn" id="save-btn" data-en="Save" data-fa="ذخیره">Save</button>
+                    <button class="action-btn" id="download-btn" data-en="Download" data-fa="دانلود">Download</button>
+                    <button class="action-btn" id="clear-btn" data-en="Clear" data-fa="پاک کردن">Clear</button>
+                </div>
+            </div>
+
+            <!-- Live Gallery -->
+            <div class="gallery-grid" id="gallery-grid">
+                <div class="gallery-loading" data-en="Loading marks…" data-fa="در حال بارگذاری نشان‌ها…">Loading marks…</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p data-en="For My Flower &nbsp;·&nbsp; Made with petals and patience" data-fa="برای گُلِ من &nbsp;·&nbsp; ساخته شده با گلبرگ و صبر">For My Flower &nbsp;·&nbsp; Made with petals and patience</p>
+    </footer>
+
+    <div id="burst-container" style="position:fixed;inset:0;pointer-events:none;z-index:1000;"></div>
+
+    <audio id="bg-audio" loop preload="auto">
+        <source src="https://files.catbox.moe/8armdt.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
+        // ══════════════════════════════
+        //  FALLING PETALS CANVAS
+        // ══════════════════════════════
         (function() {
-            // Polyfill for requestAnimationFrame
-            var requestAF = window.requestAnimationFrame || function(cb){ setTimeout(cb, 16); };
+            const canvas = document.getElementById('petal-canvas');
+            const ctx = canvas.getContext('2d');
+            let W, H, petals = [];
+            const COLORS = ['#c9a84c', '#e8d08a', '#a06090', '#d4b896', '#8b4a6e', '#e8b4d8'];
 
-            // LANGUAGE
-            var i18n = {
-                en: {
-                    title: "✨ To My Dearest Love ✨",
-                    langBtn: "فارسی",
-                    daysTogether: "We've been together for",
-                    days: "days", hours: "hours", minutes: "minutes", seconds: "seconds",
-                    hint: "Find the 20 hidden stars to reveal a special message",
-                    messageRevealed: "🌌 I Love You More Than All The Stars 🌌",
-                    letterGreeting: "My Love,",
-                    letterBody: "From the moment our stars aligned, my universe has been filled with your light. Every heartbeat whispers your name.",
-                    letterClosing: "Forever yours,",
-                    quoteLabel: "A special quote:",
-                    quoteText: "\"You are the finest, loveliest, tenderest, and most beautiful person I have ever known—and even that is an understatement.\"",
-                    songTitle: "Endless Love",
-                    wishPlaceholder: "Type your wish...",
-                    wishButton: "Send to the stars",
-                    flipFront: "📜 Read more",
-                    flipBack: "↩ Back",
-                    progressText: "Stars found: ",
-                    playBtnPlay: "▶",
-                    playBtnPause: "⏸"
-                },
-                fa: {
-                    title: "✨ به عزیزترین عشقم ✨",
-                    langBtn: "English",
-                    daysTogether: "ما با هم بوده‌ایم",
-                    days: "روز", hours: "ساعت", minutes: "دقیقه", seconds: "ثانیه",
-                    hint: "۲۰ ستاره پنهان را پیدا کن تا پیام ویژه آشکار شود",
-                    messageRevealed: "🌌 بیشتر از تمام ستاره‌ها دوستت دارم 🌌",
-                    letterGreeting: "عشق من،",
-                    letterBody: "از لحظه‌ای که ستاره‌های ما هم‌راستا شدند، دنیای من با نور تو پر شده است. هر تپش قلب نام تو را زمزمه می‌کند.",
-                    letterClosing: "تا ابد مال تو،",
-                    quoteLabel: "یک نقل‌قول خاص:",
-                    quoteText: "\"تو بهترین، دوست‌داشتنی‌ترین، لطیف‌ترین و زیباترین کسی هستی که تا به حال شناخته‌ام - و حتی این هم کم‌گویی است.\"",
-                    songTitle: "عشق بی‌پایان",
-                    wishPlaceholder: "آرزویت را بنویس...",
-                    wishButton: "به ستاره‌ها بفرست",
-                    flipFront: "📜 ادامه مطلب",
-                    flipBack: "↩ برگشت",
-                    progressText: "ستاره‌های پیدا شده: ",
-                    playBtnPlay: "▶",
-                    playBtnPause: "⏸"
-                }
-            };
-            var currentLang = 'en';
-            var playBtnEl = document.getElementById('playBtn');
-            var langToggleEl = document.getElementById('langToggle');
-
-            function applyLanguage(lang) {
-                document.body.classList.toggle('lang-fa', lang === 'fa');
-                var elements = document.querySelectorAll('[data-lang]');
-                for (var i = 0; i < elements.length; i++) {
-                    var el = elements[i];
-                    var key = el.getAttribute('data-lang');
-                    if (i18n[lang][key]) el.textContent = i18n[lang][key];
-                }
-                var placeholders = document.querySelectorAll('[data-lang-placeholder]');
-                for (var j = 0; j < placeholders.length; j++) {
-                    var el2 = placeholders[j];
-                    var key2 = el2.getAttribute('data-lang-placeholder');
-                    if (i18n[lang][key2]) el2.placeholder = i18n[lang][key2];
-                }
-                document.getElementById('flipToBack').textContent = i18n[lang].flipFront;
-                document.getElementById('flipToFront').textContent = i18n[lang].flipBack;
-                updateConstProgressText();
-                updatePlayBtnText();
+            function resize() {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
             }
 
-            function updatePlayBtnText() {
-                if (playing) playBtnEl.textContent = i18n[currentLang].playBtnPause;
-                else playBtnEl.textContent = i18n[currentLang].playBtnPlay;
-            }
-
-            langToggleEl.addEventListener('click', function() {
-                currentLang = currentLang === 'en' ? 'fa' : 'en';
-                applyLanguage(currentLang);
-                langToggleEl.textContent = i18n[currentLang].langBtn;
-            });
-
-            // Initial
-            applyLanguage('en');
-            langToggleEl.textContent = i18n.en.langBtn;
-
-            // CANVAS & STARS
-            var canvas = document.getElementById('starCanvas');
-            var ctx = canvas.getContext('2d');
-            var width, height;
-            var mouseX = 0, mouseY = 0, targetMouseX = 0, targetMouseY = 0;
-
-            function resizeCanvas() {
-                width = window.innerWidth;
-                height = window.innerHeight;
-                canvas.width = width;
-                canvas.height = height;
-                generateConstellation(); // re-place constellation
-                updateConstProgressText();
-            }
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
-
-            // Star constructor (ES5)
-            function Star(layer) {
-                this.layer = layer;
+            function Petal() {
+                this.reset = function() {
+                    this.x = Math.random() * W;
+                    this.y = -20;
+                    this.size = 4 + Math.random() * 8;
+                    this.speedY = 0.35 + Math.random() * 0.7;
+                    this.speedX = (Math.random() - 0.5) * 0.5;
+                    this.rot = Math.random() * Math.PI * 2;
+                    this.rotSpeed = (Math.random() - 0.5) * 0.012;
+                    this.alpha = 0.12 + Math.random() * 0.3;
+                    const palette = window.__wxPetalPalette || COLORS;
+                    this.color = palette[Math.floor(Math.random() * palette.length)];
+                    this.sway = Math.random() * 0.025;
+                    this.swayT = Math.random() * 100;
+                };
                 this.reset();
+                this.y = Math.random() * H;
             }
-            Star.prototype.reset = function() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                if (this.layer === 'far') {
-                    this.radius = Math.random() * 1.2 + 0.4;
-                    this.parallax = 0.02;
-                    this.baseOpacity = 0.5;
-                    this.twinkleSpeed = 0.005;
-                } else if (this.layer === 'mid') {
-                    this.radius = Math.random() * 2 + 0.8;
-                    this.parallax = 0.06;
-                    this.baseOpacity = 0.8;
-                    this.twinkleSpeed = 0.01;
-                } else {
-                    this.radius = Math.random() * 3 + 1.5;
-                    this.parallax = 0.12;
-                    this.baseOpacity = 1;
-                    this.twinkleSpeed = 0.02;
-                }
-                this.phase = Math.random() * Math.PI * 2;
-            };
-            Star.prototype.update = function(mx, my) {
-                var dx = (mx - width / 2) * this.parallax;
-                var dy = (my - height / 2) * this.parallax;
-                this.drawX = this.x + dx;
-                this.drawY = this.y + dy;
-                if (this.drawX < -10) this.drawX += width + 20;
-                if (this.drawX > width + 10) this.drawX -= width + 20;
-                if (this.drawY < -10) this.drawY += height + 20;
-                if (this.drawY > height + 10) this.drawY -= height + 20;
-            };
-            Star.prototype.draw = function(ctx, time) {
-                var twinkle = Math.sin(time * this.twinkleSpeed + this.phase) * 0.4 + 0.6;
-                var alpha = this.baseOpacity * twinkle;
-                ctx.beginPath();
-                ctx.arc(this.drawX, this.drawY, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255,255,255,' + alpha + ')';
-                ctx.fill();
-                if (this.layer === 'near' && this.radius > 2) {
-                    ctx.shadowColor = 'white';
-                    ctx.shadowBlur = 4;
+
+            function init() {
+                for (let i = 0; i < 50; i++) petals.push(new Petal());
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, W, H);
+                petals.forEach(p => {
+                    if (window.__wxPetalPalette && p._lastPalette !== window.__wxPetalPalette) {
+                        p._lastPalette = window.__wxPetalPalette;
+                        p.color = window.__wxPetalPalette[Math.floor(Math.random() * window
+                            .__wxPetalPalette.length)];
+                    }
+                    p.swayT += p.sway;
+                    p.x += p.speedX + Math.sin(p.swayT) * 0.35;
+                    p.y += p.speedY;
+                    p.rot += p.rotSpeed;
+                    if (p.y > H + 20) p.reset();
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rot);
+                    ctx.globalAlpha = p.alpha;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, p.size * 0.55, p.size, 0, 0, Math.PI * 2);
                     ctx.fill();
-                    ctx.shadowBlur = 0;
-                }
-            };
-
-            var stars = [];
-            for (var i = 0; i < 200; i++) stars.push(new Star('far'));
-            for (var j = 0; j < 150; j++) stars.push(new Star('mid'));
-            for (var k = 0; k < 70; k++) stars.push(new Star('near'));
-
-            // Shooting star (ES5)
-            function ShootingStar() {
-                this.reset();
-            }
-            ShootingStar.prototype.reset = function() {
-                this.active = false;
-                this.x = Math.random() * width * 0.5;
-                this.y = Math.random() * height * 0.4;
-                this.length = Math.random() * 80 + 40;
-                this.speed = Math.random() * 12 + 8;
-                this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.5;
-                this.progress = 0;
-                this.opacity = 1;
-            };
-            ShootingStar.prototype.update = function() {
-                if (!this.active) return;
-                this.progress += this.speed / (this.length * 0.7);
-                if (this.progress >= 1) {
-                    this.active = false;
-                    var self = this;
-                    setTimeout(function() { self.reset(); }, Math.random() * 5000 + 3000);
-                }
-            };
-            ShootingStar.prototype.draw = function(ctx) {
-                if (!this.active) return;
-                var startX = this.x + Math.cos(this.angle) * this.progress * this.length;
-                var startY = this.y + Math.sin(this.angle) * this.progress * this.length;
-                var endX = startX - Math.cos(this.angle) * this.length * 0.6;
-                var endY = startY - Math.sin(this.angle) * this.length * 0.6;
-                var grad = ctx.createLinearGradient(startX, startY, endX, endY);
-                grad.addColorStop(0, 'rgba(255,255,255,' + this.opacity + ')');
-                grad.addColorStop(1, 'rgba(255,255,255,0)');
-                ctx.beginPath();
-                ctx.moveTo(startX, startY);
-                ctx.lineTo(endX, endY);
-                ctx.strokeStyle = grad;
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.arc(startX, startY, 3, 0, Math.PI*2);
-                ctx.fillStyle = 'white';
-                ctx.fill();
-            };
-            ShootingStar.prototype.launch = function() {
-                this.active = true;
-                this.progress = 0;
-                this.x = Math.random() * width * 0.7;
-                this.y = Math.random() * height * 0.3;
-                this.opacity = Math.random() * 0.5 + 0.5;
-            };
-            var shootingStar = new ShootingStar();
-            setTimeout(function() { shootingStar.launch(); }, 2000);
-
-            // Firework particle (ES5)
-            function FireworkParticle(x, y) {
-                this.x = x;
-                this.y = y;
-                var angle = Math.random() * Math.PI * 2;
-                var speed = Math.random() * 5 + 2;
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-                this.life = 1;
-                this.decay = 0.01 + Math.random() * 0.02;
-                this.size = Math.random() * 4 + 2;
-                this.color = 'hsl(' + (Math.random() * 30 + 340) + ', 100%, 70%)';
-            }
-            FireworkParticle.prototype.update = function() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.vy += 0.05;
-                this.life -= this.decay;
-            };
-            FireworkParticle.prototype.draw = function(ctx) {
-                ctx.globalAlpha = this.life;
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-                ctx.fill();
-                ctx.globalAlpha = 1;
-            };
-            var particles = [];
-
-            function spawnFireworks(x, y) {
-                for (var i = 0; i < 80; i++) particles.push(new FireworkParticle(x, y));
-            }
-
-            // Constellation
-            var totalConstStars = 20;
-            var constellationPoints = [];
-            var constellationActive = [];
-            var activeCount = 0;
-
-            function generateConstellation() {
-                constellationPoints = [];
-                var cx = width * 0.65;
-                var cy = height * 0.45;
-                var scale = Math.min(width, height) * 0.25;
-                for (var i = 0; i < totalConstStars; i++) {
-                    var t = (i / totalConstStars) * Math.PI * 2;
-                    var xRaw = 16 * Math.pow(Math.sin(t), 3);
-                    var yRaw = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-                    var px = cx + (xRaw/16) * scale * 1.2;
-                    var py = cy - (yRaw/16) * scale * 1.2;
-                    constellationPoints.push({ x: px, y: py, order: i });
-                }
-                constellationPoints.sort(function(a, b) {
-                    return Math.atan2(a.y-cy, a.x-cx) - Math.atan2(b.y-cy, b.x-cx);
+                    ctx.restore();
                 });
-                for (var i2 = 0; i2 < totalConstStars; i2++) constellationPoints[i2].order = i2;
-                constellationActive = new Array(totalConstStars).fill(false);
-                activeCount = 0;
-                document.getElementById('revealedMsg').classList.remove('show');
+                requestAnimationFrame(draw);
             }
 
-            function getTargetStar() {
-                for (var i = 0; i < totalConstStars; i++) {
-                    if (!constellationActive[i]) return constellationPoints[i];
+            window.addEventListener('resize', resize);
+            resize();
+            init();
+            draw();
+        })();
+
+        // ══════════════════════════════
+        //  DYNAMIC WEATHER SYSTEM
+        // ══════════════════════════════
+        (function() {
+            'use strict';
+            const LS_KEY = 'wx_state_v2';
+            const LS_TTL_MS = 20 * 60 * 1000;
+            const OPEN_METEO = 'https://api.open-meteo.com/v1/forecast';
+
+            function wmoToTheme(code, hour) {
+                if (code >= 71 && code <= 77) return 'winter';
+                if (code >= 51 && code <= 86) return 'rain';
+                if (hour >= 21 || hour < 6) return 'night';
+                return 'default';
+            }
+
+            function themeFromTime() {
+                const h = new Date().getHours();
+                return (h >= 21 || h < 6) ? 'night' : 'default';
+            }
+
+            function applyTheme(theme) {
+                const body = document.body;
+                const badge = document.getElementById('wx-badge');
+                const badgeLbl = document.getElementById('wx-badge-label');
+                const fog = document.getElementById('wx-fog');
+                body.classList.remove('wx-night', 'wx-rain', 'wx-winter');
+                const labels = { night: 'night mode', rain: 'rain', winter: 'snow', default: '' };
+                const icons = { night: '✦', rain: '◦', winter: '❄', default: '' };
+                if (theme === 'night') {
+                    body.classList.add('wx-night');
+                    fog.classList.add('wx-visible');
+                    lazyLoadStars();
+                } else {
+                    fog.classList.remove('wx-visible');
+                    clearStarCanvas();
                 }
+                if (theme === 'rain') {
+                    body.classList.add('wx-rain');
+                    lazyLoadRain();
+                } else {
+                    stopRain();
+                }
+                if (theme === 'winter') {
+                    body.classList.add('wx-winter');
+                    switchToSnowPetals();
+                } else {
+                    restorePetals();
+                }
+                if (theme !== 'default') {
+                    badgeLbl.textContent = icons[theme] + ' ' + labels[theme];
+                    badge.classList.add('wx-visible');
+                } else {
+                    badge.classList.remove('wx-visible');
+                }
+            }
+
+            function saveState(theme) {
+                try { localStorage.setItem(LS_KEY, JSON.stringify({ theme, ts: Date.now() })); } catch (
+                e) {}
+            }
+
+            function loadState() {
+                try {
+                    const raw = localStorage.getItem(LS_KEY);
+                    if (!raw) return null;
+                    const obj = JSON.parse(raw);
+                    if (Date.now() - obj.ts < LS_TTL_MS) return obj.theme;
+                } catch (e) {}
                 return null;
             }
 
-            function updateConstProgressText() {
-                var el = document.getElementById('constProgress');
-                if (el) el.textContent = (i18n[currentLang].progressText || "Stars found: ") + activeCount + '/' + totalConstStars;
+            function fetchWeatherAndApply() {
+                if (!navigator.geolocation) { fallback(); return; }
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        const { latitude: lat, longitude: lon } = pos.coords;
+                        const hour = new Date().getHours();
+                        const url =
+                            `${OPEN_METEO}?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&current_weather=true&hourly=weathercode&timezone=auto&forecast_days=1`;
+                        const fetchOpts = { method: 'GET' };
+                        if ('priority' in Request.prototype) fetchOpts.priority = 'low';
+                        fetch(url, fetchOpts)
+                            .then(r => r.ok ? r.json() : Promise.reject())
+                            .then(data => {
+                                const code = data.current_weather?.weathercode ?? 0;
+                                const theme = wmoToTheme(code, hour);
+                                saveState(theme);
+                                applyTheme(theme);
+                            })
+                            .catch(() => fallback());
+                    },
+                    () => fallback(), { timeout: 5000, maximumAge: LS_TTL_MS }
+                );
             }
 
-            // Canvas click handler – works on touch too
-            function handleCanvasTap(clientX, clientY) {
-                var rect = canvas.getBoundingClientRect();
-                var scaleX = canvas.width / rect.width;
-                var scaleY = canvas.height / rect.height;
-                var clickX = (clientX - rect.left) * scaleX;
-                var clickY = (clientY - rect.top) * scaleY;
-
-                var target = getTargetStar();
-                if (!target) return;
-                var dist = Math.sqrt(Math.pow(clickX - target.x, 2) + Math.pow(clickY - target.y, 2));
-                if (dist < 20) {
-                    constellationActive[target.order] = true;
-                    activeCount++;
-                    updateConstProgressText();
-                    if (activeCount === totalConstStars) {
-                        document.getElementById('revealedMsg').classList.add('show');
-                        spawnFireworks(target.x, target.y);
-                    }
-                }
+            function fallback() {
+                const theme = themeFromTime();
+                saveState(theme);
+                applyTheme(theme);
             }
 
-            canvas.addEventListener('click', function(e) {
-                handleCanvasTap(e.clientX, e.clientY);
-            });
-            canvas.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                var touch = e.touches[0];
-                if (touch) handleCanvasTap(touch.clientX, touch.clientY);
-            }, {passive: false});
-
-            // ANIMATION LOOP
-            var lastTime = 0, timeAcc = 0;
-            function animate(timestamp) {
-                if (!lastTime) lastTime = timestamp;
-                var dt = timestamp - lastTime;
-                lastTime = timestamp;
-                timeAcc += dt * 0.001;
-
-                mouseX += (targetMouseX - mouseX) * 0.05;
-                mouseY += (targetMouseY - mouseY) * 0.05;
-                ctx.clearRect(0, 0, width, height);
-
-                for (var s = 0; s < stars.length; s++) {
-                    stars[s].update(mouseX, mouseY);
-                    stars[s].draw(ctx, timeAcc);
-                }
-
-                var target = getTargetStar();
-                for (var p = 0; p < constellationPoints.length; p++) {
-                    var pt = constellationPoints[p];
-                    var active = constellationActive[pt.order];
-                    var isTarget = target && target.order === pt.order;
-                    ctx.beginPath();
-                    ctx.arc(pt.x, pt.y, active ? 5 : 4, 0, Math.PI*2);
-                    ctx.fillStyle = active ? '#ffd700' : '#ffb6c1';
-                    ctx.shadowColor = active ? 'gold' : '#ff69b4';
-                    ctx.shadowBlur = active ? 10 : 6;
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                    if (isTarget && !active) {
-                        ctx.beginPath();
-                        ctx.arc(pt.x, pt.y, 12 + Math.sin(timeAcc*5)*3, 0, Math.PI*2);
-                        ctx.strokeStyle = 'rgba(255,215,0,0.6)';
-                        ctx.lineWidth = 2;
-                        ctx.setLineDash([4,4]);
-                        ctx.stroke();
-                        ctx.setLineDash([]);
-                    }
-                }
-                // lines
-                ctx.strokeStyle = 'rgba(255,215,0,0.6)';
-                ctx.lineWidth = 2;
-                ctx.shadowColor = 'gold';
-                ctx.shadowBlur = 6;
-                for (var l = 0; l < totalConstStars-1; l++) {
-                    var a = constellationPoints[l], b = constellationPoints[l+1];
-                    if (constellationActive[a.order] && constellationActive[b.order]) {
-                        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-                    }
-                }
-                ctx.shadowBlur = 0;
-
-                shootingStar.update();
-                shootingStar.draw(ctx);
-
-                for (var f = particles.length-1; f >= 0; f--) {
-                    particles[f].update();
-                    particles[f].draw(ctx);
-                    if (particles[f].life <= 0) particles.splice(f,1);
-                }
-
-                requestAF(animate);
-            }
-
-            window.addEventListener('mousemove', function(e) {
-                targetMouseX = e.clientX;
-                targetMouseY = e.clientY;
-            });
-            window.addEventListener('touchmove', function(e) {
-                e.preventDefault();
-                var t = e.touches[0];
-                if (t) { targetMouseX = t.clientX; targetMouseY = t.clientY; }
-            }, {passive: false});
-
-            setInterval(function() {
-                if (!shootingStar.active && Math.random() < 0.6) shootingStar.launch();
-            }, 6000);
-
-            // ENVELOPE
-            var envelope = document.getElementById('envelope');
-            envelope.addEventListener('click', function(e) {
-                if (e.target.classList.contains('flip-btn')) return;
-                envelope.classList.toggle('open');
-                if (envelope.classList.contains('open')) {
-                    for (var i = 0; i < 10; i++) {
-                        setTimeout(function() {
-                            spawnHeartAt(window.innerWidth/2, window.innerHeight/2 - 60);
-                        }, i*80);
-                    }
-                }
-            });
-
-            var letterInner = document.getElementById('letterInner');
-            document.getElementById('flipToBack').addEventListener('click', function(e) {
-                e.stopPropagation();
-                letterInner.classList.add('flipped');
-            });
-            document.getElementById('flipToFront').addEventListener('click', function(e) {
-                e.stopPropagation();
-                letterInner.classList.remove('flipped');
-            });
-
-            // COUNTER (local time)
-            var startDate = new Date(2024, 1, 14, 0, 0, 0); // Feb 14, local midnight
-            function updateCounter() {
-                var now = new Date();
-                var diff = now - startDate;
-                if (diff < 0) diff = 0;
-                var days = Math.floor(diff / 86400000);
-                var hours = Math.floor((diff / 3600000) % 24);
-                var mins = Math.floor((diff / 60000) % 60);
-                var secs = Math.floor((diff / 1000) % 60);
-                document.getElementById('daysVal').textContent = days;
-                document.getElementById('hoursVal').textContent = hours;
-                document.getElementById('minsVal').textContent = mins;
-                document.getElementById('secsVal').textContent = secs;
-            }
-            setInterval(updateCounter, 1000);
-            updateCounter();
-
-            // HEARTS
-            function spawnHeartAt(x, y) {
-                var heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.style.left = (x - 12) + 'px';
-                heart.style.top = (y - 12) + 'px';
-                document.body.appendChild(heart);
-                heart.addEventListener('animationend', function() { heart.remove(); });
-            }
-            function spawnRandomHeart() {
-                spawnHeartAt(Math.random() * window.innerWidth, window.innerHeight - 20);
-            }
-            setInterval(spawnRandomHeart, 2500);
-
-            document.body.addEventListener('click', function(e) {
-                if (e.target.closest('button, input, .envelope, .player, .wish-container, .lang-btn')) return;
-                spawnHeartAt(e.clientX, e.clientY);
-            });
-
-            // MUSIC PLAYER
-            var player = document.getElementById('player');
-            var progressFill = document.getElementById('progressFill');
-            var playing = false;
-            var progressInterval = null;
-            var progress = 0;
-
-            playBtnEl.addEventListener('click', function() {
-                if (playing) {
-                    playing = false;
-                    player.classList.remove('playing');
-                    clearInterval(progressInterval);
+            function boot() {
+                const cached = loadState();
+                if (cached) { applyTheme(cached); return; }
+                applyTheme(themeFromTime());
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(() => fetchWeatherAndApply(), { timeout: 4000 });
                 } else {
-                    playing = true;
-                    player.classList.add('playing');
-                    progress = 0;
-                    progressFill.style.width = '0%';
-                    progressInterval = setInterval(function() {
-                        progress += 1;
-                        if (progress >= 100) {
-                            clearInterval(progressInterval);
-                            playing = false;
-                            player.classList.remove('playing');
-                            progressFill.style.width = '100%';
-                            var msg = document.createElement('div');
-                            msg.style.cssText = 'position:fixed;bottom:15vh;left:50%;transform:translateX(-50%);color:#ffd700;font-size:1.5rem;z-index:300;pointer-events:none;';
-                            msg.textContent = '💖 I love you! 💖';
-                            document.body.appendChild(msg);
-                            setTimeout(function(){ msg.remove(); }, 3000);
-                        } else {
-                            progressFill.style.width = progress + '%';
-                        }
-                    }, 300);
+                    setTimeout(fetchWeatherAndApply, 1500);
                 }
-                updatePlayBtnText();
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', boot);
+            } else {
+                boot();
+            }
+
+            let starAnimId = null;
+
+            function lazyLoadStars() {
+                const canvas = document.getElementById('weather-canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.classList.add('wx-visible');
+                let W, H, stars = [];
+
+                function resize() {
+                    W = canvas.width = window.innerWidth;
+                    H = canvas.height = window.innerHeight;
+                }
+
+                function makeStar() {
+                    return {
+                        x: Math.random() * W,
+                        y: Math.random() * H,
+                        r: 0.4 + Math.random() * 1.4,
+                        alpha: 0.2 + Math.random() * 0.7,
+                        speed: 0.003 + Math.random() * 0.008,
+                        phase: Math.random() * Math.PI * 2,
+                        glow: Math.random() > 0.85
+                    };
+                }
+
+                function initStars() {
+                    resize();
+                    stars = [];
+                    const COUNT = Math.min(180, Math.floor(W * H / 8000));
+                    for (let i = 0; i < COUNT; i++) stars.push(makeStar());
+                }
+
+                function drawStars(t) {
+                    ctx.clearRect(0, 0, W, H);
+                    stars.forEach(s => {
+                        const a = s.alpha * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+                        ctx.save();
+                        if (s.glow) {
+                            const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 5);
+                            g.addColorStop(0, `rgba(220,200,255,${a * 0.55})`);
+                            g.addColorStop(1, 'rgba(220,200,255,0)');
+                            ctx.fillStyle = g;
+                            ctx.beginPath();
+                            ctx.arc(s.x, s.y, s.r * 5, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                        ctx.globalAlpha = a;
+                        ctx.fillStyle = '#e8deff';
+                        ctx.beginPath();
+                        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    });
+                }
+
+                function loop(t) {
+                    drawStars(t * 0.001);
+                    starAnimId = requestAnimationFrame(loop);
+                }
+                window.addEventListener('resize', initStars);
+                if (starAnimId) cancelAnimationFrame(starAnimId);
+                initStars();
+                starAnimId = requestAnimationFrame(loop);
+            }
+
+            function clearStarCanvas() {
+                if (starAnimId) { cancelAnimationFrame(starAnimId);
+                    starAnimId = null; }
+                const canvas = document.getElementById('weather-canvas');
+                canvas.classList.remove('wx-visible');
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+
+            let rainAnimId = null;
+
+            function lazyLoadRain() {
+                const canvas = document.getElementById('wx-rain-canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.classList.add('wx-visible');
+                let W, H, drops = [];
+
+                function resize() {
+                    W = canvas.width = window.innerWidth;
+                    H = canvas.height = window.innerHeight;
+                }
+
+                function makeDrop() {
+                    return {
+                        x: Math.random() * W,
+                        y: Math.random() * H - H,
+                        len: 12 + Math.random() * 18,
+                        speed: 6 + Math.random() * 8,
+                        alpha: 0.06 + Math.random() * 0.12,
+                        angle: 0.22 + Math.random() * 0.08
+                    };
+                }
+
+                function initDrops() {
+                    resize();
+                    drops = [];
+                    const COUNT = Math.min(120, Math.floor(W / 8));
+                    for (let i = 0; i < COUNT; i++) drops.push(makeDrop());
+                }
+
+                function drawRain() {
+                    ctx.clearRect(0, 0, W, H);
+                    drops.forEach(d => {
+                        d.y += d.speed;
+                        d.x -= d.speed * d.angle * 0.5;
+                        if (d.y > H + d.len) { d.y = -d.len;
+                            d.x = Math.random() * W; }
+                        ctx.save();
+                        ctx.globalAlpha = d.alpha;
+                        ctx.strokeStyle = '#c0d8ff';
+                        ctx.lineWidth = 0.7;
+                        ctx.beginPath();
+                        ctx.moveTo(d.x, d.y);
+                        ctx.lineTo(d.x - d.len * d.angle, d.y + d.len);
+                        ctx.stroke();
+                        ctx.restore();
+                    });
+                    rainAnimId = requestAnimationFrame(drawRain);
+                }
+                window.addEventListener('resize', initDrops);
+                if (rainAnimId) cancelAnimationFrame(rainAnimId);
+                initDrops();
+                rainAnimId = requestAnimationFrame(drawRain);
+            }
+
+            function stopRain() {
+                if (rainAnimId) { cancelAnimationFrame(rainAnimId);
+                    rainAnimId = null; }
+                const canvas = document.getElementById('wx-rain-canvas');
+                canvas.classList.remove('wx-visible');
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+
+            const ORIGINAL_PETAL_COLORS = ['#c9a84c', '#e8d08a', '#a06090', '#d4b896', '#8b4a6e', '#e8b4d8'];
+            const SNOW_PETAL_COLORS = ['#ddeeff', '#c8e4ff', '#eef6ff', '#b8d8f0', '#cce8ff', '#f0f8ff'];
+            let snowMode = false;
+
+            function switchToSnowPetals() {
+                if (snowMode) return;
+                snowMode = true;
+                window.__wxSnowColors = SNOW_PETAL_COLORS;
+                window.__wxPetalPalette = SNOW_PETAL_COLORS;
+            }
+
+            function restorePetals() {
+                if (!snowMode) return;
+                snowMode = false;
+                window.__wxPetalPalette = ORIGINAL_PETAL_COLORS;
+            }
+        })();
+
+        // ══════════════════════════════
+        //  AUDIO PLAYER
+        // ══════════════════════════════
+        const audio = document.getElementById('bg-audio');
+        const audioBtn = document.getElementById('audio-btn');
+        let audioReady = false;
+
+        function startAudio() {
+            if (audioReady) return;
+            audioReady = true;
+            audio.volume = 0;
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    audioBtn.classList.add('playing');
+                    audioBtn.textContent = '♪';
+                    let vol = 0;
+                    const fadeIn = setInterval(() => {
+                        vol += 0.02;
+                        if (vol >= 0.4) { vol = 0.4;
+                            clearInterval(fadeIn); }
+                        audio.volume = vol;
+                    }, 100);
+                }).catch(() => { audioReady = false; });
+            }
+        }
+
+        audioBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!audioReady) { startAudio(); return; }
+            if (audio.paused) {
+                audio.play();
+                audioBtn.textContent = '♪';
+                audioBtn.classList.add('playing');
+            } else {
+                audio.pause();
+                audioBtn.textContent = '♩';
+                audioBtn.classList.remove('playing');
+            }
+        });
+
+        function onFirstInteraction() {
+            startAudio();
+            document.removeEventListener('click', onFirstInteraction);
+            document.removeEventListener('scroll', onFirstInteraction);
+            document.removeEventListener('touchstart', onFirstInteraction);
+            document.removeEventListener('keydown', onFirstInteraction);
+        }
+        document.addEventListener('click', onFirstInteraction, { passive: true });
+        document.addEventListener('scroll', onFirstInteraction, { passive: true });
+        document.addEventListener('touchstart', onFirstInteraction, { passive: true });
+        document.addEventListener('keydown', onFirstInteraction, { passive: true });
+
+        // ══════════════════════════════
+        //  GSAP ANIMATIONS
+        // ══════════════════════════════
+        gsap.registerPlugin(ScrollTrigger);
+        const heroTl = gsap.timeline({ delay: 0.3 });
+        heroTl
+            .fromTo('#h-tag', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out' }, 0)
+            .fromTo('#h-line1', { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 1, ease: 'power2.inOut' },
+                0.5)
+            .fromTo('#h-title', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1.5, ease: 'power3.out' }, 0.8)
+            .fromTo('#h-line2', { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 1, ease: 'power2.inOut' },
+                1.3)
+            .fromTo('#h-sub', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out' }, 1.6)
+            .fromTo('#h-scroll', { opacity: 0 }, { opacity: 1, duration: 1 }, 2.6);
+
+        document.querySelectorAll('.chapter-divider').forEach(el => {
+            gsap.fromTo(el, { opacity: 0, y: 24 }, {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power2.out',
+                scrollTrigger: { trigger: el, start: 'top 82%', once: true }
+            });
+        });
+
+        document.querySelectorAll('.img-wrapper').forEach(el => {
+            gsap.fromTo(el, { opacity: 0, scale: .96 }, {
+                opacity: 1,
+                scale: 1,
+                duration: 1.4,
+                ease: 'power3.out',
+                scrollTrigger: { trigger: el, start: 'top 78%', once: true }
+            });
+        });
+
+        document.querySelectorAll('.bubble-wrap').forEach((el, i) => {
+            const panel = el.closest('.panel');
+            const fromX = el.style.left && !el.style.right ? -20 : 20;
+            gsap.fromTo(el, { opacity: 0, x: fromX }, {
+                opacity: 1,
+                x: 0,
+                duration: 1,
+                delay: 0.6 + i * 0.1,
+                ease: 'back.out(1.4)',
+                scrollTrigger: { trigger: panel || el, start: 'top 65%', once: true }
+            });
+        });
+
+        document.querySelectorAll('.panel-caption').forEach(el => {
+            gsap.fromTo(el, { opacity: 0, y: 20 }, {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power2.out',
+                scrollTrigger: { trigger: el, start: 'top 85%', once: true }
+            });
+        });
+
+        document.querySelectorAll('.quote-block').forEach(el => {
+            gsap.fromTo(el, { opacity: 0, x: -30 }, {
+                opacity: 1,
+                x: 0,
+                duration: 1.2,
+                ease: 'power2.out',
+                scrollTrigger: { trigger: el, start: 'top 80%', once: true }
+            });
+        });
+
+        gsap.fromTo('.cd-wf', { opacity: 0, y: 20 }, {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: 'power2.out',
+            scrollTrigger: { trigger: '.cd-wf', start: 'top 82%', once: true }
+        });
+
+        gsap.fromTo('.wf-img-wrapper', { opacity: 0, scale: 0.96 }, {
+            opacity: 1,
+            scale: 1,
+            duration: 1.5,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: '#withered-flower-section', start: 'top 75%', once: true }
+        });
+
+        gsap.fromTo('.wf-text-block', { opacity: 0, y: 24 }, {
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            ease: 'power2.out',
+            delay: 0.8,
+            scrollTrigger: { trigger: '#withered-flower-section', start: 'top 75%', once: true }
+        });
+
+        gsap.fromTo('#secret-section', { opacity: 0, y: 40 }, {
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            ease: 'power2.out',
+            scrollTrigger: { trigger: '#secret-section', start: 'top 80%', once: true }
+        });
+
+        // ══════════════════════════════
+        //  PASSWORD LOGIC
+        // ══════════════════════════════
+        const input = document.getElementById('password-input');
+        const btn = document.getElementById('unlock-btn');
+        const errMsg = document.getElementById('pw-error');
+        const SECRET = '48';
+
+        function tryUnlock() {
+            const val = input.value.trim();
+            if (val === SECRET) {
+                triggerReveal();
+            } else {
+                errMsg.style.opacity = '1';
+                gsap.fromTo(input, { x: -10 }, {
+                    x: 0,
+                    duration: 0.5,
+                    ease: 'elastic.out(1,0.3)',
+                    keyframes: { x: [-10, 10, -8, 8, -5, 5, 0] }
+                });
+                gsap.fromTo(input, { borderColor: 'rgba(192,96,96,0.8)' }, {
+                    borderColor: 'rgba(201,168,76,0.4)',
+                    duration: 1.5,
+                    delay: 0.3
+                });
+                setTimeout(() => { errMsg.style.opacity = '0'; }, 2800);
+            }
+        }
+
+        btn.addEventListener('click', tryUnlock);
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
+
+        function triggerReveal() {
+            btn.disabled = true;
+            input.disabled = true;
+            const lockBox = document.querySelector('.lock-box');
+            gsap.to(lockBox, {
+                opacity: 0,
+                y: -24,
+                duration: 0.7,
+                ease: 'power2.in',
+                onComplete: () => {
+                    lockBox.style.display = 'none';
+                    startEnvelopeAnimation();
+                }
+            });
+        }
+
+        function startEnvelopeAnimation() {
+            const stage = document.getElementById('envelope-stage');
+            const flap = document.getElementById('env-flap');
+            const seal = document.getElementById('env-seal');
+            const letter = document.getElementById('env-letter');
+            stage.classList.add('visible');
+            const letterTxt = letter.querySelector('[data-en]');
+            if (letterTxt) {
+                letterTxt.innerHTML = letterTxt.getAttribute(window._siteLang === 'fa' ? 'data-fa' : 'data-en');
+            }
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    setTimeout(() => {
+                        gsap.to(stage, {
+                            opacity: 0,
+                            y: -40,
+                            duration: 0.9,
+                            ease: 'power2.in',
+                            onComplete: () => {
+                                document.getElementById('secret-section').style.display = 'none';
+                                showReveal();
+                            }
+                        });
+                    }, 3200);
+                }
+            });
+            tl.fromTo(stage, { opacity: 0, scale: 0.88, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 1.0,
+                ease: 'power3.out' });
+            tl.fromTo('#the-envelope', { rotationY: -8, rotationX: 4 }, { rotationY: 0, rotationX: 0, duration: 1.1,
+                ease: 'power2.out' }, 0.3);
+            tl.to(seal, { scale: 1.18, boxShadow: '0 0 40px rgba(201,168,76,0.8)', duration: 0.4,
+            ease: 'power2.out' }, 1.0);
+            tl.to(seal, { scale: 0, opacity: 0, duration: 0.4, ease: 'back.in(1.7)' }, 1.5);
+            tl.to(flap, { rotationX: -185, duration: 1.3, ease: 'power2.inOut', transformOrigin: 'top center',
+                transformStyle: 'preserve-3d' }, 1.7);
+            tl.to(letter, { opacity: 1, y: '-68%', duration: 1.2, ease: 'power3.out',
+            pointerEvents: 'none' }, 2.4);
+            tl.fromTo(letter, { boxShadow: '0 0 0px rgba(201,168,76,0)' }, {
+                boxShadow: '0 0 40px rgba(201,168,76,0.25)',
+                duration: 0.8,
+                ease: 'power2.out'
+            }, 3.0);
+            tl.call(() => burstPetals(), null, 2.6);
+        }
+
+        function showReveal() {
+            const rev = document.getElementById('secret-reveal');
+            rev.style.display = 'block';
+            setTimeout(() => { rev.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+            burstPetals();
+            gsap.fromTo(rev, { opacity: 0, y: 50 }, {
+                opacity: 1,
+                y: 0,
+                duration: 1.6,
+                ease: 'power3.out',
+                onComplete: () => { setTimeout(typeMessage, 300); }
+            });
+            const revImg = rev.querySelector('.reveal-img-wrapper');
+            if (revImg) {
+                gsap.fromTo(revImg, { opacity: 0, scale: .95 }, { opacity: 1, scale: 1, duration: 1.8,
+                    ease: 'power3.out', delay: 0.3 });
+            }
+            const msgBox = rev.querySelector('.final-message');
+            if (msgBox) {
+                gsap.fromTo(msgBox, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out',
+                    delay: 0.8 });
+            }
+        }
+
+        function typeMessage() {
+            const msgEn = "Even the chapters that make you shy,\nI love them because they are yours.";
+            const msgFa = "حتی فصل‌هایی که شرمنده‌ات می‌کنند،\nدوستشان دارم چون از توست.";
+            const msg = window._siteLang === 'fa' ? msgFa : msgEn;
+            const el = document.getElementById('final-text');
+            el.innerHTML = '';
+            let i = 0;
+
+            function type() {
+                if (i < msg.length) {
+                    if (msg[i] === '\n') { el.innerHTML += '<br>'; } else { el.innerHTML += msg[i]; }
+                    i++;
+                    setTimeout(type, 50 + Math.random() * 45);
+                }
+            }
+            type();
+        }
+
+        // ══════════════════════════════
+        //  MOOD SELECTOR SYSTEM
+        // ══════════════════════════════
+        (function() {
+            const PALETTES = {
+                midnight: { '--black': '#0a080d', '--deep': '#110d1a', '--mauve': '#3b1f4a',
+                    '--mauve2': '#5c2e72', '--gold': '#c9a84c', '--gold2': '#e8d08a', '--gold3': '#f5e9c0',
+                    '--cream': '#fdf6e3', '--text': '#d4b896' },
+                rose: { '--black': '#150810', '--deep': '#1e0a14', '--mauve': '#5a1530', '--mauve2': '#8b2550',
+                    '--gold': '#c47c8a', '--gold2': '#e8aab8', '--gold3': '#f5d8de', '--cream': '#fff0f3',
+                    '--text': '#d4a0a8' },
+                ivory: { '--black': '#f0ebe0', '--deep': '#e8e0d0', '--mauve': '#c8b89a', '--mauve2': '#8b6a4a',
+                    '--gold': '#8b6a2a', '--gold2': '#6b4a1a', '--gold3': '#3a2a0a', '--cream': '#2a1a0a',
+                    '--text': '#4a3a2a' }
+            };
+            const HERO_GRADS = {
+                midnight: 'radial-gradient(ellipse at 50% 40%,#2a0d3a 0%,#110d1a 50%,#0a080d 100%)',
+                rose: 'radial-gradient(ellipse at 50% 40%,#4a0a25 0%,#1e0a14 50%,#150810 100%)',
+                ivory: 'radial-gradient(ellipse at 50% 40%,#d8c8a8 0%,#e8e0d0 50%,#f0ebe0 100%)'
+            };
+            let currentMood = 'midnight';
+
+            function applyMood(mood, animate) {
+                const root = document.documentElement;
+                const palette = PALETTES[mood];
+                const heroBg = document.querySelector('.hero-bg');
+                document.body.classList.remove('mood-midnight', 'mood-rose', 'mood-ivory');
+                document.body.classList.add('mood-' + mood);
+                if (!animate) {
+                    Object.entries(palette).forEach(([k, v]) => root.style.setProperty(k, v));
+                    if (heroBg) heroBg.style.background = HERO_GRADS[mood];
+                    return;
+                }
+                const overlay = document.createElement('div');
+                overlay.style.cssText =
+                    'position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:0;background:' + palette[
+                        '--black'] + ';';
+                document.body.appendChild(overlay);
+                const tl = gsap.timeline({
+                    onComplete: () => {
+                        Object.entries(palette).forEach(([k, v]) => root.style.setProperty(k, v));
+                        if (heroBg) heroBg.style.background = HERO_GRADS[mood];
+                        gsap.to(overlay, {
+                            opacity: 0,
+                            duration: 0.5,
+                            ease: 'power2.out',
+                            onComplete: () => overlay.remove()
+                        });
+                    }
+                });
+                tl.to(overlay, { opacity: 0.7, duration: 0.4, ease: 'power2.inOut' })
+                    .to(overlay, { opacity: 0.0, duration: 0.0 });
+            }
+
+            document.querySelectorAll('.mood-dot').forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const mood = dot.dataset.mood;
+                    if (mood === currentMood) return;
+                    document.querySelectorAll('.mood-dot').forEach(d => d.classList.remove(
+                        'active'));
+                    dot.classList.add('active');
+                    applyMood(mood, true);
+                    currentMood = mood;
+                });
+            });
+            applyMood('midnight', false);
+        })();
+
+        // ══════════════════════════════
+        //  LANGUAGE SWITCHER SYSTEM
+        // ══════════════════════════════
+        (function() {
+            const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+            window._siteLang = browserLang.startsWith('fa') ? 'fa' : 'en';
+            const toggle = document.getElementById('lang-toggle');
+            const lblEn = document.getElementById('lbl-en');
+            const lblFa = document.getElementById('lbl-fa');
+
+            function applyLang(lang, animate) {
+                const isFA = lang === 'fa';
+                if (isFA) {
+                    toggle.classList.add('fa-active');
+                    toggle.setAttribute('aria-checked', 'true');
+                    lblEn.classList.remove('active');
+                    lblFa.classList.add('active');
+                } else {
+                    toggle.classList.remove('fa-active');
+                    toggle.setAttribute('aria-checked', 'false');
+                    lblEn.classList.add('active');
+                    lblFa.classList.remove('active');
+                }
+                document.documentElement.setAttribute('lang', isFA ? 'fa' : 'en');
+                const targets = document.querySelectorAll('[data-en]');
+                if (!animate) {
+                    targets.forEach(el => {
+                        const val = el.getAttribute(isFA ? 'data-fa' : 'data-en');
+                        if (val !== null) el.innerHTML = val;
+                    });
+                    return;
+                }
+                gsap.to(targets, {
+                    opacity: 0,
+                    duration: 0.25,
+                    ease: 'power2.in',
+                    stagger: 0.008,
+                    onComplete: () => {
+                        targets.forEach(el => {
+                            const val = el.getAttribute(isFA ? 'data-fa' : 'data-en');
+                            if (val !== null) el.innerHTML = val;
+                        });
+                        gsap.to(targets, { opacity: 1, duration: 0.45, ease: 'power2.out',
+                            stagger: 0.008 });
+                    }
+                });
+            }
+            applyLang(window._siteLang, false);
+
+            function doToggle() {
+                window._siteLang = window._siteLang === 'fa' ? 'en' : 'fa';
+                applyLang(window._siteLang, true);
+            }
+            toggle.addEventListener('click', doToggle);
+            toggle.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
+                    doToggle(); }
+            });
+        })();
+
+        function burstPetals() {
+            const container = document.getElementById('burst-container');
+            container.innerHTML = '';
+            const COLS = ['#c9a84c', '#e8d08a', '#a06090', '#d4b896', '#e8b4d8', '#fff0c8', '#8b4a6e'];
+            const CX = window.innerWidth / 2;
+            const CY = window.innerHeight / 2;
+            const COUNT = 90;
+            for (let i = 0; i < COUNT; i++) {
+                const p = document.createElement('div');
+                p.className = 'burst-petal';
+                const angle = (i / COUNT) * 360 + (Math.random() - 0.5) * 15;
+                const dist = 180 + Math.random() * 320;
+                const dur = 1.1 + Math.random() * 1.1;
+                const size = 7 + Math.random() * 14;
+                p.style.cssText = `
+              left:${CX}px;top:${CY}px;
+              width:${size}px;height:${size * 1.6}px;
+              background:${COLS[Math.floor(Math.random() * COLS.length)]};
+              --ang:${angle}deg;
+              --dist:-${dist}px;
+              --dur:${dur}s;
+              animation-delay:${Math.random() * 0.25}s;
+              border-radius:50% 50% 50% 0;
+              opacity:0;
+            `;
+                container.appendChild(p);
+            }
+            setTimeout(() => { container.innerHTML = ''; }, 4000);
+        }
+
+        // ══════════════════════════════
+        //  CURSOR SPARKLE (desktop only)
+        // ══════════════════════════════
+        (function() {
+            if (window.matchMedia('(pointer:coarse)').matches) return;
+            let lastTime = 0;
+            document.addEventListener('mousemove', e => {
+                const now = Date.now();
+                if (now - lastTime < 40) return;
+                lastTime = now;
+                const s = document.createElement('div');
+                s.className = 'cursor-spark';
+                s.style.left = e.clientX + 'px';
+                s.style.top = e.clientY + 'px';
+                document.body.appendChild(s);
+                gsap.to(s, {
+                    opacity: 0,
+                    scale: 2.5,
+                    duration: 0.6,
+                    ease: 'power2.out',
+                    onComplete: () => s.remove()
+                });
+            });
+        })();
+
+        // ══════════════════════════════
+        //  PRELOADER
+        // ══════════════════════════════
+        window.addEventListener('load', function() {
+            const loaderText = document.getElementById('loader-text');
+            const isFa = window._siteLang === 'fa';
+            setTimeout(() => { if (loaderText) loaderText.innerText = isFa ?
+                    "در حال جمع‌آوری گلبرگ‌ها..." : "Gathering petals..."; }, 1500);
+            setTimeout(() => { if (loaderText) loaderText.innerText = isFa ? "تقریباً رسیدیم، گُلِ من." :
+                    "Almost there, Flower."; }, 3000);
+            setTimeout(() => {
+                gsap.to("#preloader", {
+                    duration: 1.5,
+                    opacity: 0,
+                    y: -100,
+                    onComplete: () => { document.getElementById('preloader').style.display =
+                            "none"; },
+                    ease: "power4.inOut"
+                });
+            }, 4500);
+        });
+    </script>
+
+    <!-- ══════════════════════════════
+         THE ETERNAL GALLERY — IIFE
+         ══════════════════════════════ -->
+    <script>
+        (function() {
+            'use strict';
+
+            /* ── Supabase Configuration ── */
+            const SUPABASE_URL = 'https://wwjxqkarjfigbfftplff.supabase.co';
+            const SUPABASE_ANON_KEY =
+                'sb_publishable_pmKdhacZgMv6LpLcU3t1Rw_TzHS0-Ua';
+
+            /* ── DOM References ── */
+            const canvas = document.getElementById('drawing-canvas');
+            const ctx = canvas.getContext('2d');
+            const galleryGrid = document.getElementById('gallery-grid');
+            const saveBtn = document.getElementById('save-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const toolPen = document.getElementById('tool-pen');
+            const toolEraser = document.getElementById('tool-eraser');
+            const brushSlider = document.getElementById('brush-slider');
+            const brushSizeLabel = document.getElementById('brush-size-label');
+            const artistNameInput = document.getElementById('artist-name');
+            const colorSwatches = document.querySelectorAll('#color-swatches .color-swatch');
+
+            /* ── State ── */
+            let isDrawing = false;
+            let currentTool = 'pen'; // 'pen' | 'eraser'
+            let currentColor = '#D4AF37';
+            let brushSize = 3;
+            let lastX = 0;
+            let lastY = 0;
+            let supabaseClient = null;
+
+            /* ── Initialize Supabase Client ── */
+            function initSupabase() {
+                try {
+                    if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                        console.log('✓ Supabase client initialized');
+                    } else {
+                        throw new Error('Supabase CDN not loaded');
+                    }
+                } catch (err) {
+                    console.warn('Supabase client init failed — using REST fallback', err);
+                    supabaseClient = null;
+                }
+            }
+
+            /* ── Canvas Setup ── */
+            function initCanvas() {
+                ctx.fillStyle = '#fdf6e3';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                updateBrushStyle();
+            }
+
+            function updateBrushStyle() {
+                if (currentTool === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.strokeStyle = 'rgba(0,0,0,1)';
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = currentColor;
+                }
+                ctx.lineWidth = brushSize;
+            }
+
+            function getCanvasCoords(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: (clientX - rect.left) * scaleX,
+                    y: (clientY - rect.top) * scaleY
+                };
+            }
+
+            /* ── Drawing Handlers ── */
+            function startDraw(e) {
+                e.preventDefault();
+                isDrawing = true;
+                const coords = getCanvasCoords(e);
+                lastX = coords.x;
+                lastY = coords.y;
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                // Draw a dot for taps
+                ctx.fillStyle = currentTool === 'eraser' ? '#fdf6e3' : currentColor;
+                ctx.beginPath();
+                ctx.arc(lastX, lastY, brushSize / 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                e.preventDefault();
+                const coords = getCanvasCoords(e);
+                ctx.lineTo(coords.x, coords.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(coords.x, coords.y);
+                lastX = coords.x;
+                lastY = coords.y;
+            }
+
+            function endDraw(e) {
+                if (!isDrawing) return;
+                isDrawing = false;
+                ctx.beginPath();
+            }
+
+            /* ── Canvas Event Listeners ── */
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', endDraw);
+            canvas.addEventListener('mouseleave', endDraw);
+            canvas.addEventListener('touchstart', startDraw, { passive: false });
+            canvas.addEventListener('touchmove', draw, { passive: false });
+            canvas.addEventListener('touchend', endDraw);
+
+            /* ── Tool Switching ── */
+            toolPen.addEventListener('click', () => {
+                currentTool = 'pen';
+                toolPen.classList.add('active');
+                toolEraser.classList.remove('active');
+                updateBrushStyle();
+                canvas.style.cursor = 'crosshair';
             });
 
-            // WISH
-            document.getElementById('wishBtn').addEventListener('click', function() {
-                var input = document.getElementById('wishInput');
-                var wish = input.value.trim();
-                if (!wish) return;
-                input.value = '';
-                var wishStar = document.createElement('div');
-                wishStar.textContent = '⭐ ' + wish;
-                wishStar.style.cssText = 'position:fixed;bottom:15vh;right:5vw;color:#ffd700;font-size:1.2rem;z-index:350;pointer-events:none;animation:wishFloat 4s ease-out forwards;';
-                document.body.appendChild(wishStar);
-                wishStar.addEventListener('animationend', function() { wishStar.remove(); });
+            toolEraser.addEventListener('click', () => {
+                currentTool = 'eraser';
+                toolEraser.classList.add('active');
+                toolPen.classList.remove('active');
+                updateBrushStyle();
+                canvas.style.cursor = 'cell';
             });
 
-            // Start
-            requestAF(animate);
-            setTimeout(function() { shootingStar.launch(); }, 1000);
+            /* ── Color Swatches ── */
+            colorSwatches.forEach(swatch => {
+                swatch.addEventListener('click', () => {
+                    colorSwatches.forEach(s => s.classList.remove('active'));
+                    swatch.classList.add('active');
+                    currentColor = swatch.dataset.color;
+                    if (currentTool === 'pen') {
+                        updateBrushStyle();
+                    }
+                });
+            });
+
+            /* ── Brush Slider ── */
+            brushSlider.addEventListener('input', () => {
+                brushSize = parseInt(brushSlider.value, 10);
+                brushSizeLabel.textContent = brushSize;
+                updateBrushStyle();
+            });
+
+            /* ── Clear Canvas ── */
+            clearBtn.addEventListener('click', () => {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.fillStyle = '#fdf6e3';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                updateBrushStyle();
+            });
+
+            /* ── Get Image Data (with cream background composite) ── */
+            function getImageDataURL() {
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.fillStyle = '#fdf6e3';
+                tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+                tempCtx.drawImage(canvas, 0, 0);
+                return tempCanvas.toDataURL('image/png');
+            }
+
+            /* ── Download ── */
+            downloadBtn.addEventListener('click', () => {
+                const dataURL = getImageDataURL();
+                const link = document.createElement('a');
+                link.download = 'my-mark.png';
+                link.href = dataURL;
+                link.click();
+            });
+
+            /* ── Toast Notification ── */
+            let toastTimeout;
+
+            function showToast(message, duration = 4000) {
+                let toast = document.querySelector('.gallery-toast');
+                if (!toast) {
+                    toast = document.createElement('div');
+                    toast.className = 'gallery-toast';
+                    document.body.appendChild(toast);
+                }
+                toast.textContent = message;
+                if (toastTimeout) clearTimeout(toastTimeout);
+                requestAnimationFrame(() => {
+                    toast.classList.add('show');
+                });
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, duration);
+            }
+
+            /* ── Save to Supabase ── */
+            saveBtn.addEventListener('click', async () => {
+                const name = artistNameInput.value.trim();
+                if (!name) {
+                    showToast(window._siteLang === 'fa' ?
+                        'لطفاً نام خود را وارد کنید.' :
+                        'Please enter your name.');
+                    artistNameInput.focus();
+                    gsap.fromTo(artistNameInput, { x: -8 }, { x: 0, duration: 0.4,
+                        ease: 'elastic.out(1,0.3)' });
+                    return;
+                }
+
+                saveBtn.disabled = true;
+                saveBtn.textContent = '...';
+
+                const imageData = getImageDataURL();
+                const payload = {
+                    name: name,
+                    image_data: imageData,
+                    created_at: new Date().toISOString()
+                };
+
+                let success = false;
+
+                try {
+                    if (supabaseClient) {
+                        const { data, error } = await supabaseClient
+                            .from('gallery')
+                            .insert([payload])
+                            .select();
+                        if (error) throw error;
+                        success = true;
+                    } else {
+                        // REST fallback
+                        const res = await fetch(`${SUPABASE_URL}/rest/v1/gallery`, {
+                            method: 'POST',
+                            headers: {
+                                'apikey': SUPABASE_ANON_KEY,
+                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                                'Content-Type': 'application/json',
+                                'Prefer': 'return=representation'
+                            },
+                            body: JSON.stringify(payload)
+                        });
+                        if (!res.ok) throw new Error('HTTP ' + res.status);
+                        success = true;
+                    }
+                } catch (err) {
+                    console.error('Save failed:', err);
+                    showToast(window._siteLang === 'fa' ?
+                        'خطا در ذخیره‌سازی. دوباره تلاش کن.' :
+                        'Save failed. Please try again.');
+                }
+
+                saveBtn.disabled = false;
+                saveBtn.textContent = window._siteLang === 'fa' ? 'ذخیره' : 'Save';
+
+                if (success) {
+                    showToast(
+                        (window._siteLang === 'fa' ?
+                            'نشان تو ثبت شد، ' :
+                            'Your mark has been saved, ') + name + '.'
+                    );
+                    loadGallery();
+                }
+            });
+
+            /* ── Load Gallery ── */
+            async function loadGallery() {
+                galleryGrid.innerHTML =
+                    `<div class="gallery-loading">${window._siteLang === 'fa' ? 'در حال بارگذاری نشان‌ها…' : 'Loading marks…'}</div>`;
+
+                let records = [];
+
+                try {
+                    if (supabaseClient) {
+                        const { data, error } = await supabaseClient
+                            .from('gallery')
+                            .select('*')
+                            .order('created_at', { ascending: false })
+                            .limit(50);
+                        if (error) throw error;
+                        records = data || [];
+                    } else {
+                        const res = await fetch(
+                            `${SUPABASE_URL}/rest/v1/gallery?select=*&order=created_at.desc&limit=50`, {
+                                headers: {
+                                    'apikey': SUPABASE_ANON_KEY,
+                                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                                }
+                            });
+                        if (!res.ok) throw new Error('HTTP ' + res.status);
+                        records = await res.json();
+                    }
+                } catch (err) {
+                    console.error('Gallery load failed:', err);
+                    galleryGrid.innerHTML =
+                        `<div class="gallery-empty">${window._siteLang === 'fa' ? 'خطا در بارگذاری گالری.' : 'Failed to load gallery.'}</div>`;
+                    return;
+                }
+
+                if (!records || records.length === 0) {
+                    galleryGrid.innerHTML =
+                        `<div class="gallery-empty">${window._siteLang === 'fa' ? 'هنوز نشان ویژه‌ای نیست. اولین نفر باش…' : 'No marks yet. Be the first to leave one…'}</div>`;
+                    return;
+                }
+
+                galleryGrid.innerHTML = '';
+                records.forEach((record, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.style.transitionDelay = `${index * 0.06}s`;
+
+                    const img = document.createElement('img');
+                    img.className = 'gallery-item-img';
+                    img.src = record.image_data;
+                    img.alt = record.name;
+                    img.loading = 'lazy';
+
+                    const nameDiv = document.createElement('div');
+                    nameDiv.className = 'gallery-item-name';
+                    nameDiv.textContent = record.name;
+
+                    item.appendChild(img);
+                    item.appendChild(nameDiv);
+                    galleryGrid.appendChild(item);
+                });
+
+                // GSAP staggered animation
+                requestAnimationFrame(() => {
+                    const items = galleryGrid.querySelectorAll('.gallery-item');
+                    gsap.fromTo(items, { opacity: 0, y: 30, scale: 0.94 }, {
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        duration: 0.7,
+                        stagger: 0.08,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: galleryGrid,
+                            start: 'top 85%',
+                            once: true
+                        }
+                    });
+                });
+            }
+
+            /* ── Init ── */
+            function init() {
+                initSupabase();
+                initCanvas();
+                loadGallery();
+            }
+
+            // Run after page is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
         })();
     </script>
 </body>
-</html>
+    </html>
